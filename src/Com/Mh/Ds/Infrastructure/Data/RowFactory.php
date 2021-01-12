@@ -53,7 +53,7 @@ class RowFactory implements IRowFactory
     /**
      * @param string[] $tables
      */
-    public function setNoDateModifiedTables( $tables )
+    public function setNoDateModifiedTables( array $tables )
     {
         $this->noDateModifiedTables = $tables;
     }
@@ -71,7 +71,7 @@ class RowFactory implements IRowFactory
     /**
      * @param Boolean $log
      */
-    public function setLog( $log )
+    public function setLog( bool $log )
     {
         $this->_log = $log;
     }

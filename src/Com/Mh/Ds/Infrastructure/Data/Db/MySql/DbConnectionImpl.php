@@ -1,4 +1,4 @@
-<?php /** @noinspection DuplicatedCode */
+<?php
 
 namespace Com\Mh\Ds\Infrastructure\Data\Db\MySql;
 
@@ -452,7 +452,6 @@ class DbConnectionImpl implements IDbConnection
      */
     private function displayError()
     {
-        /** @noinspection DuplicatedCode */
         $errorString = $this->getErrorNumber() . " - " . $this->getErrorMessage() . "<br/>\n<br/>\n";
 
         if ( !empty( $_SERVER[ 'HTTP_HOST' ] ) && !$this->isAjaxRequest() )

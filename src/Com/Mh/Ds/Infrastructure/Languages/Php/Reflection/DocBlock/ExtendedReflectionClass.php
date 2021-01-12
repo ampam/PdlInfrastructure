@@ -193,16 +193,9 @@ class ExtendedReflectionClass extends ReflectionClass
                 {
                     switch ( $token[ 0 ] )
                     {
-
                         case T_STRING:
                         case T_NS_SEPARATOR:
-
-                            if ( $record )
-                            {
-                                $currentUse[ $record ] .= $token[ 1 ];
-                            }
-
-                            break;
+                            $currentUse[ $record ] .= $token[ 1 ];
                     }
                 }
             }

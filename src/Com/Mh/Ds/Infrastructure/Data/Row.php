@@ -829,7 +829,8 @@ abstract class Row extends Attributable
 
         $row = self::createInstance();
         $updateOptions[ SqlOptions::Table ] = $tableName;
-        $row->getDb()->update( $updateOptions );
+        $result = $row->getDb()->update( $updateOptions );
+        return $result;
     }
 
 

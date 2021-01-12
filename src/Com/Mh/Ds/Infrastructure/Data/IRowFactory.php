@@ -24,7 +24,7 @@ interface IRowFactory
     public function create( $rowClass );
 
     /**
-     * @return \Com\Mh\Ds\Infrastructure\Data\Db\IDbOperations
+     * @return IDbOperations
      */
     public function getDb();
 }

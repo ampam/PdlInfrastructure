@@ -72,6 +72,9 @@ class DocBlockUtils
      */
     public static function getPropertyTypeAsString( $object, $propertyName )
     {
+        /**
+         * @var Type $result
+         */
         $result = self::getPropertyType( $object, $propertyName )->__toString();
         return $result;
     }

@@ -32,7 +32,7 @@ class Attributable
      *
      * @return AttributeInfo
      */
-    public static function getPropertyAttribute( $propertyAttributes, $propertyName, $attributeName )
+    public static function getPropertyAttribute( array $propertyAttributes, $propertyName, $attributeName )
     {
         $result = null;
 
