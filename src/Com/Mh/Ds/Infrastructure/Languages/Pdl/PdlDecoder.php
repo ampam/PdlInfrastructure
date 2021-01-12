@@ -8,7 +8,6 @@
 
 namespace Com\Mh\Ds\Infrastructure\Languages\Pdl;
 
-use Com\Mh\Ds\Infrastructure\Net\BaseRequest;
 use Com\Mh\Ds\Infrastructure\Diagnostic\Debug;
 use Com\Mh\Ds\Infrastructure\Languages\Php\Reflection\PropertyUtils;
 
@@ -21,16 +20,18 @@ class PdlDecoder
 {
     const TypeHint = '__type';
     const PdlTypeHint = '__typeHint';
-    const ExcludedRequestMembers = [
-        'modId',
-        'do',
-        'actionId',
-        'ajax',
-        'mobApp',
-        'downloader',
-        'upload',
-        'ref'
-    ];
+
+    private static $excludedRequestMembers = [];
+    private static $excludedClasses = [];
+
+    /**
+     * @param $config
+     */
+    public static function setConfig( $config )
+    {
+        self::$excludedRequestMembers = $config['excludedRequestMembers'] ?? [];
+        self::$excludedClasses = $config['excludedClasses'] ?? [];
+    }
 
 
     /**
@@ -219,10 +220,10 @@ class PdlDecoder
      *
      * @return bool
      */
-    private static function canDecodeMember( &$object, $memberName )
+    private static function canDecodeMember( &$object, string $memberName )
     {
         $isExcludedRequestMember = $object instanceof BaseRequest &&
-            in_array( $memberName, self::ExcludedRequestMembers );
+            in_array( $memberName, self::$excludedRequestMembers );
 
         $result = $memberName !== self::TypeHint && !$isExcludedRequestMember;
 
