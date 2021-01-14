@@ -142,9 +142,9 @@ class DbConnectionImpl implements IDbConnection
             die;
         }
 
-        $result->set_charset( "utf8" );
-        $result->query( "SET NAMES 'utf8'" );
-        $result->query( "SET CHARACTER_SET_CLIENT utf8" );
+        $result->set_charset( $this->dbConf['chatSet'] );
+        $result->query( "SET NAMES '{$this->dbConf['chatSet']}'" );
+        $result->query( "SET CHARACTER_SET_CLIENT {$this->dbConf['chatSet']}" );
 
         return $result;
     }
@@ -452,6 +452,7 @@ class DbConnectionImpl implements IDbConnection
      */
     private function displayError()
     {
+        /** @noinspection DuplicatedCode */
         $errorString = $this->getErrorNumber() . " - " . $this->getErrorMessage() . "<br/>\n<br/>\n";
 
         if ( !empty( $_SERVER[ 'HTTP_HOST' ] ) && !$this->isAjaxRequest() )

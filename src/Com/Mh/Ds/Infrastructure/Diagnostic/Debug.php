@@ -57,7 +57,7 @@ class Debug
             }
             else
             {
-                $result = "/hdd1/logs/bizapps.log";
+                $result = $_SERVER['DOCUMENT_ROOT'] . "/storage/logs/pdl.log";
             }
         }
 

@@ -222,7 +222,8 @@ class PdlDecoder
      */
     private static function canDecodeMember( &$object, string $memberName )
     {
-        $isExcludedRequestMember = $object instanceof BaseRequest &&
+        $objectClass = get_class( $object );
+        $isExcludedRequestMember = in_array( $objectClass, self::$excludedClasses ) ||
             in_array( $memberName, self::$excludedRequestMembers );
 
         $result = $memberName !== self::TypeHint && !$isExcludedRequestMember;
