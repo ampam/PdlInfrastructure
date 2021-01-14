@@ -8,10 +8,10 @@ return [
         //Memcached::OPT_SERIALIZER => Memcached::SERIALIZER_JSON
     ],
     'servers' => [
-        'vw1' => [
+        'server-name-1' => [
             'port' => 11211
         ],
-        'vw2' => [
+        'server-name-2' => [
             'port' => 11211
         ],
     ]

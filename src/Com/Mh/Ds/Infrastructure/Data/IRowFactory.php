@@ -26,5 +26,8 @@ interface IRowFactory
     /**
      * @return IDbOperations
      */
-    public function getDb();
+    public function getDb():IDbOperations;
+
+    public function setLog( bool $value);
+    public function getLog():bool;
 }

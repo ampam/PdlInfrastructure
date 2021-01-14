@@ -2,7 +2,7 @@
 
 return [
     'enabled' => true,
-    'persistentId' => 'devMain',
+    'persistentId' => 'appMain',
     'options' => [
         Memcached::OPT_DISTRIBUTION => Memcached::DISTRIBUTION_CONSISTENT,
         //Memcached::OPT_SERIALIZER => Memcached::SERIALIZER_JSON

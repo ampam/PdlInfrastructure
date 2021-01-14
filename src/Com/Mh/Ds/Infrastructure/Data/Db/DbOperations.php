@@ -5,7 +5,6 @@ namespace Com\Mh\Ds\Infrastructure\Data\Db;
 use Com\Mh\Ds\Infrastructure\Container\SingletonTrait;
 use Com\Mh\Ds\Infrastructure\Data\Db\MySql\MySqlUtils;
 use Exception;
-use Com\Mh\Ds\Infrastructure\Data\Db\MySql\IDbConnection;
 use Com\Mh\Ds\Infrastructure\Diagnostic\Debug;
 
 
@@ -20,7 +19,7 @@ class DbOperations implements IDbOperations
     private $logSelectTime;
 
     /** @var  IDbConnection */
-    private $mySqlDb;
+    private $dbConnection;
 
     /**
      *
@@ -28,7 +27,7 @@ class DbOperations implements IDbOperations
     public function init()
     {
         $this->logSelectTime = false;
-        $this->mySqlDb = DbUtils::getDbConnection();
+        $this->dbConnection = DbUtils::getDbConnection();
     }
 
     /**
@@ -65,7 +64,7 @@ class DbOperations implements IDbOperations
             Debug::log( $sql );
         }
 
-        $result = $this->mySqlDb->getAllRows( $sql );
+        $result = $this->dbConnection->getAllRows( $sql );
 
         if ( $this->logSelectTime )
         {
@@ -109,9 +108,9 @@ class DbOperations implements IDbOperations
 
         $sql = "INSERT INTO {$table} {$fields}";
 
-        $this->mySqlDb->executeWrite( $sql );
+        $this->dbConnection->executeWrite( $sql );
 
-        $result = $this->mySqlDb->insertId();
+        $result = $this->dbConnection->insertId();
 
         return $result;
     }
@@ -126,8 +125,8 @@ class DbOperations implements IDbOperations
     {
         $update = SqlOptions::toUpdate( $options );
 
-        $this->mySqlDb->executeWrite( $update );
-        $result = $this->mySqlDb->affectedRows();
+        $this->dbConnection->executeWrite( $update );
+        $result = $this->dbConnection->affectedRows();
         return $result;
     }
 
@@ -167,9 +166,9 @@ class DbOperations implements IDbOperations
             Debug::log( $delete );
         }
 
-        $this->mySqlDb->executeWrite( $delete );
+        $this->dbConnection->executeWrite( $delete );
 
-        $result = $this->mySqlDb->affectedRows();
+        $result = $this->dbConnection->affectedRows();
 
         return $result;
     }
@@ -203,10 +202,10 @@ class DbOperations implements IDbOperations
             Debug::log( $sql );
         }
 
-        $this->mySqlDb->executeWrite( $sql );
+        $this->dbConnection->executeWrite( $sql );
 
 
-        $result = $this->mySqlDb->insertIds();
+        $result = $this->dbConnection->insertIds();
 
         return $result;
 
@@ -236,7 +235,7 @@ class DbOperations implements IDbOperations
 
         $sql = "UPDATE {$table} {$updateSet} WHERE {$primaryKey} IN ( $ids ) {$where}";
 
-        $this->mySqlDb->executeWrite( $sql );
+        $this->dbConnection->executeWrite( $sql );
 
     }
 
@@ -248,7 +247,7 @@ class DbOperations implements IDbOperations
      */
     public function rawSelect( string $select )
     {
-        $result = $this->mySqlDb->getAllRows( $select );
+        $result = $this->dbConnection->getAllRows( $select );
         return $result;
     }
 
@@ -260,7 +259,7 @@ class DbOperations implements IDbOperations
      */
     public function rawSelectOne( string $select )
     {
-        $result = $this->mySqlDb->getOne( $select );
+        $result = $this->dbConnection->getOne( $select );
         return $result;
     }
 

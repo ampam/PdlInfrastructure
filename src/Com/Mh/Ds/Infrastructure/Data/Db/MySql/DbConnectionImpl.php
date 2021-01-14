@@ -2,6 +2,7 @@
 
 namespace Com\Mh\Ds\Infrastructure\Data\Db\MySql;
 
+use Com\Mh\Ds\Infrastructure\Data\Db\IDbConnection;
 use Exception;
 use mysqli;
 use mysqli_result;
@@ -10,7 +11,7 @@ use Com\Mh\Ds\Infrastructure\Http\Inputs;
 use Com\Mh\Ds\Infrastructure\Languages\Php\Boolean;
 
 /**
- * Class MySql2
+ * Class DbConnectionImpl
  * @package Com\Mh\Ds\Infrastructure\Data\Db\MySql
  */
 class DbConnectionImpl implements IDbConnection

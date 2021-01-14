@@ -6,18 +6,21 @@
  * Time: 12:06 PM
  */
 
-namespace Com\Mh\Ds\Infrastructure\Data;
+namespace Com\Mh\Laravel;
+
+
 
 use Com\Mh\Ds\Infrastructure\Container\SingletonTrait;
-use Com\Mh\Ds\Infrastructure\Data\Db\DbOperations;
+use Com\Mh\Ds\Infrastructure\Data\CommonColumns;
 use Com\Mh\Ds\Infrastructure\Data\Db\IDbOperations;
-
+use Com\Mh\Ds\Infrastructure\Data\IRowFactory;
+use Com\Mh\Ds\Infrastructure\Data\Row;
 
 /**
  * Class RowFactory
- * @package Com\Mh\Ds\Infrastructure\Data
+ * @package Com\Mh\Laravel
  */
-class RowFactory implements IRowFactory
+class LaravelRowFactory implements IRowFactory
 {
     use SingletonTrait;
 
@@ -64,7 +67,7 @@ class RowFactory implements IRowFactory
      */
     public function getDb():IDbOperations
     {
-        $result = DbOperations::getInstance();
+        $result = LaravelDbOperations::getInstance();
         return $result;
     }
 

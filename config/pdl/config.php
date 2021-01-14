@@ -6,7 +6,7 @@ return [
     'debug' => [
         'logQueriesEnabled' => false
     ],
-    'memcached' => include "memcached/dev.php",
+    'memcached' => include "memcached/config.php",
     'mysql' => include "db/mysql.php",
     'pdl' => [
         /**
@@ -19,5 +19,8 @@ return [
          */
         'excludedClasses' => [],
         'projectNamespaces' => []
-    ]
+    ],
+    //'rowFactoryImpl' => Com\Mh\Ds\Infrastructure\Data\RowFactory::class,
+    //'DbOperationImpl' => Com\Mh\Ds\Infrastructure\Data\Db\MySql\DbConnectionImpl::class
+    //'DbOperationImpl' => Com\Mh\Laravel\LaravelDbOperations::class
 ];

@@ -12,7 +12,6 @@ namespace Com\Mh\Ds\Infrastructure\Data\Db;
 use Com\Mh\Ds\Infrastructure\Cache\Cache;
 use Com\Mh\Ds\Infrastructure\Data\Row;
 use Exception;
-use Com\Mh\Ds\Infrastructure\Data\Db\MySql\IDbConnection;
 use Com\Mh\Ds\Infrastructure\Data\Db\MySql\DbConnectionImpl;
 use Com\Mh\Ds\Infrastructure\Data\Db\MySql\TableInfo;
 use Com\Mh\Ds\Infrastructure\Data\WhereStatement;
@@ -46,7 +45,7 @@ class DbUtils
      *
      * @return IDbConnection
      */
-    private static function connectToMySql()
+    private static function connect()
     {
 
         $result = self::getConnectionInstance();
@@ -66,7 +65,7 @@ class DbUtils
     {
         if ( null === self::$dbConnection )
         {
-            self::connectToMySql();
+            self::connect();
         }
         return self::$dbConnection;
     }
@@ -284,6 +283,7 @@ class DbUtils
      */
     private static function getConnectionInstance()
     {
+        //TODO read from config what class to use
         $result = new DbConnectionImpl();
         return $result;
     }

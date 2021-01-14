@@ -21,8 +21,8 @@ interface IDbOperations
     public function select( $options );
     public function insert( $options );
     public function update( $options );
-    public function multiInsert( $options );
-    public function delete( $options );
+    public function multiInsert( $options, $logIt = false );
+    public function delete( $options, $logIt = false );
 
     public function getNowString();
 

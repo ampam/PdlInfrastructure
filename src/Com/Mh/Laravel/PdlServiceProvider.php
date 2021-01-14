@@ -3,6 +3,7 @@
 
 namespace Com\Mh\Laravel;
 
+use Com\Mh\Ds\Infrastructure\Data\Row;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -12,7 +13,7 @@ use Illuminate\Support\ServiceProvider;
 class PdlServiceProvider extends ServiceProvider
 {
 
-    const ConfigPath = __DIR__ . '/../../../../config/pdl';
+    const ConfigPath = __DIR__ . '/../../../../config/pdl/';
     const ConfigFile = self::ConfigPath . 'config.php';
 
     /**
@@ -23,10 +24,15 @@ class PdlServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ( $this->app->runningInConsole() )
+        {
+            $this->publishes( [
+                self::ConfigPath => self::getConfigDestPath( 'pdl/' ),
+            ], 'pdl-php-config' );
+        }
 
-        $this->publishes( [
-            self::ConfigPath => self::getConfigDestPath( 'pdl/'),
-        ], 'pdl-php-config' );
+        $rowFactory = LaravelRowFactory::getInstance();
+        Row::setDefaultFactory( $rowFactory );
     }
 
     /**

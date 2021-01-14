@@ -1,13 +1,13 @@
 <?php
 
-namespace Com\Mh\Ds\Infrastructure\Data\Db\MySql;
+namespace Com\Mh\Ds\Infrastructure\Data\Db;
 
 
 use Exception;
 
 /**
  * Class IMySql
- * @package Com\Mh\Ds\Infrastructure\Data\Db\MySql
+ * @package Com\Mh\Ds\Infrastructure\Data\Db
  */
 interface IDbConnection
 {
