@@ -12,7 +12,7 @@ use Illuminate\Support\ServiceProvider;
 class PdlServiceProvider extends ServiceProvider
 {
 
-    const ConfigPath = __DIR__ . '/../../../../config/';
+    const ConfigPath = __DIR__ . '/../../../../config/pdl';
     const ConfigFile = self::ConfigPath . 'config.php';
 
     /**

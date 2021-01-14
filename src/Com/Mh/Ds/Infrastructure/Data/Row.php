@@ -17,7 +17,7 @@ use Com\Mh\Ds\Infrastructure\Strings\StringUtils;
 use Com\Mh\Ds\Infrastructure\Data\Attributes\Attributes;
 use Com\Mh\Ds\Infrastructure\Data\Db\DbOperations;
 use Com\Mh\Ds\Infrastructure\Data\Db\DbUtils;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Exception;
 use ReflectionClass;
 use ReflectionException;
@@ -148,7 +148,10 @@ abstract class Row extends Attributable
     public static function getColumnClassFromTable( string $fullTablename )
     {
         $tableName = explode( '.', $fullTablename )[ 1 ];
-        $result = StringUtils::toPascalCase( Inflector::singularize( $tableName ) ) . "Columns";
+
+        $inflector = InflectorFactory::create()->build();
+
+        $result = StringUtils::toPascalCase( $inflector->singularize( $tableName ) ) . "Columns";
         return $result;
     }
 
