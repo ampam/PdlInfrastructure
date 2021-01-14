@@ -75,6 +75,13 @@ abstract class Row extends Attributable
 
     }
 
+    /**
+     * @return array
+     */
+    public function getCalculatedColumns():array
+    {
+        return [];
+    }
 
     /**
      * @return IDbOperations
@@ -638,6 +645,8 @@ abstract class Row extends Attributable
         {
             $this->setDbId( Row::InvalidDbId );
         }
+
+        $this->calculateColumns();
     }
 
     /**
@@ -661,27 +670,27 @@ abstract class Row extends Attributable
 
     /**
      * @param Row[] $rows
-     * @param string[] $exclusionList
+     * @param string[] $excludedColumns
      *
      * @return array
      */
-    public static function toDbRows( array $rows, $exclusionList = [] )
+    public static function toDbRows( array $rows, $excludedColumns = [] )
     {
         $result = [];
         foreach ( $rows as $row )
         {
-            $result[] = $row->toDbRow( $exclusionList );
+            $result[] = $row->toDbRow( $excludedColumns );
         }
 
         return $result;
     }
 
     /**
-     * @param $exclusionList
+     * @param $excludedColumns
      *
      * @return array|object
      */
-    public function toDbRow( $exclusionList )
+    public function toDbRow( $excludedColumns )
     {
         $result = [];
         $refObject = new ReflectionObject( $this );
@@ -689,7 +698,7 @@ abstract class Row extends Attributable
 
         foreach ( $properties as $property )
         {
-            if ( !$property->isStatic() && !in_array( $property->name, $exclusionList ) )
+            if ( !$property->isStatic() && !in_array( $property->name, $excludedColumns ) )
             {
                 $columnName = $this->getColumnNameFromProperty( $property->name );
                 $result[ $columnName ] = $property->getValue( $this );
@@ -702,22 +711,22 @@ abstract class Row extends Attributable
     /**
      * @return array
      */
-    protected function toDbRowNoIdNoDates()
+    protected function toDbRowNoIdNoDates( array $excludedColumns )
     {
-        $result = $this->toDbRow( [
+        $result = $this->toDbRow( array_merge([
             $this->_dbIdProperty,
-            'dateAdded',
-            'dateModified'
-        ] );
+            $this->getColumnNameFromProperty( CommonColumns::DateAdded ),
+            $this->getColumnNameFromProperty( CommonColumns::DateModified )
+        ], $excludedColumns ) );
         return $result;
     }
 
     /**
      * @return array
      */
-    protected function toDbRowForInsert()
+    protected function toDbRowForInsert( )
     {
-        $result = $this->toDbRowNoIdNoDates();
+        $result = $this->toDbRowNoIdNoDates( $this->getCalculatedColumns() );
 
         return $result;
     }
@@ -891,7 +900,7 @@ abstract class Row extends Attributable
      */
     protected function toDbRowForUpdate()
     {
-        $result = $this->toDbRowNoIdNoDates();
+        $result = $this->toDbRowNoIdNoDates( $this->getCalculatedColumns() );
         return $result;
     }
 
@@ -1062,6 +1071,7 @@ abstract class Row extends Attributable
         {
             $row = $rowFactory->create( $rowClass );
             $row->loadFromDbRow( $dbRow );
+            $row->calculateColumns();
             if ( $byDbId )
             {
                 $result[ $row->getDbId() ] = $row;
@@ -1269,5 +1279,19 @@ abstract class Row extends Attributable
         return $result;
     }
 
+    /**
+     *
+     */
+    private function calculateColumns()
+    {
+        foreach( $this->getCalculatedColumns() as $calculatedColumnName )
+        {
+            $methodName = "calculate{$calculatedColumnName}";
+            if ( method_exists( $this, $methodName ))
+            {
+                $this->$calculatedColumnName = $this->$methodName();
+            }
+        }
+    }
 
 }

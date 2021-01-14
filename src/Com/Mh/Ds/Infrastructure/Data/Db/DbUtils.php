@@ -223,7 +223,7 @@ class DbUtils
     {
         if ( $fields instanceof Row )
         {
-            $fields = $fields->toDbRow( [] );
+            $fields = $fields->toDbRow( $fields->getCalculatedColumns() );
         }
 
         foreach ( $fields as $field => $value )
