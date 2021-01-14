@@ -13,6 +13,7 @@ class PdlServiceProvider extends ServiceProvider
 {
 
     const ConfigPath = __DIR__ . '/../../../../config/';
+    const ConfigFile = self::ConfigPath . 'config.php';
 
     /**
      * Bootstrap any package services.
@@ -55,7 +56,7 @@ class PdlServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            self::ConfigPath, 'pdl'
+            self::ConfigFile, 'pdl'
         );
     }
 }
