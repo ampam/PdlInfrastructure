@@ -32,6 +32,7 @@ class PdlServiceProvider extends ServiceProvider
         }
 
         $rowFactory = LaravelRowFactory::getInstance();
+
         Row::setDefaultFactory( $rowFactory );
     }
 

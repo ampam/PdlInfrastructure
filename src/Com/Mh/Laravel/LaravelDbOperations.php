@@ -20,7 +20,21 @@ use Illuminate\Support\Facades\Log;
  */
 class LaravelDbOperations implements IDbOperations
 {
+
     use SingletonTrait;
+
+    /**
+     * LaravelDbOperations constructor.
+     */
+    public function __construct()
+    {
+        DbUtils::setEscapeFunction( function( $value ):string {
+            $result = $this->escapeString( $value );
+            return $result;
+        });
+    }
+
+
     /**
      * @param $options
      *
@@ -70,7 +84,6 @@ class LaravelDbOperations implements IDbOperations
      */
     public function select( $options )
     {
-        $time = microtime( true );
 
         $sql = SqlOptions::toSelect( $options );
 
@@ -91,7 +104,7 @@ class LaravelDbOperations implements IDbOperations
      */
     public function insert( $options )
     {
-        $fields = DbUtils::fields2Insert( $options[ SqlOptions::Fields ], $escapeWithMySql );
+        $fields = DbUtils::fields2Insert( $options[ SqlOptions::Fields ], true );
         $table = $options[ SqlOptions::Table ];
 
         $sql = "INSERT INTO {$table} {$fields}";
@@ -183,6 +196,17 @@ class LaravelDbOperations implements IDbOperations
         $now = time();
         $formattedNow = date( 'm/d/Y h:i:s A', $now );
         $result = self::dateParts2String( getdate( strtotime( $formattedNow ) ), true, true );
+        return $result;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return string
+     */
+    public function escapeString( $value ): string
+    {
+        $result = Db::getPdo()->quote( $value );
         return $result;
     }
 

@@ -25,5 +25,6 @@ interface IDbOperations
     public function delete( $options, $logIt = false );
 
     public function getNowString();
+    public function escapeString( $value ):string;
 
 }

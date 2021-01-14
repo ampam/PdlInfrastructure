@@ -10,9 +10,9 @@ namespace Com\Mh\Ds\Infrastructure\Data\Db;
 
 
 use Com\Mh\Ds\Infrastructure\Cache\Cache;
+use Com\Mh\Ds\Infrastructure\Data\Db\MySql\DbConnectionImpl;
 use Com\Mh\Ds\Infrastructure\Data\Row;
 use Exception;
-use Com\Mh\Ds\Infrastructure\Data\Db\MySql\DbConnectionImpl;
 use Com\Mh\Ds\Infrastructure\Data\Db\MySql\TableInfo;
 use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
 
@@ -34,8 +34,14 @@ class DbUtils
     private static $config;
 
     /**
-     * @param $config
+     * @var callable
      */
+    protected static $escapeFunc = null;
+
+    /**
+     * @param $config
+     *
+     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection*/
     public static function setConfig( &$config )
     {
         self::$config = $config;
@@ -55,6 +61,24 @@ class DbUtils
 
         self::$dbConnection = $result;
 
+        self::$escapeFunc = function( $value ):string  {
+            $result = self::$dbConnection->escapeString( $value );
+            return $result;
+        };
+
+        return $result;
+    }
+
+
+    /**
+     * @param $string
+     *
+     * @return string
+     */
+    public static function escapeString( $string )
+    {
+        $escapeFunc = self::$escapeFunc;
+        $result = $escapeFunc( $string );
         return $result;
     }
 
@@ -116,15 +140,6 @@ class DbUtils
         return implode( ',', $result );
     }
 
-    /**
-     * @param $string
-     *
-     * @return string
-     */
-    public static function escapeString( $string )
-    {
-        return self::$dbConnection->escapeString( $string );
-    }
 
 
     /**
@@ -225,20 +240,29 @@ class DbUtils
     }
 
     /**
-     * @param $string
-     * @param bool $escapeWithMySql
+     * @param callable $escapeFunc
+     */
+    public static function setEscapeFunction( callable $escapeFunc )
+    {
+        self::$escapeFunc = $escapeFunc;
+    }
+
+    /**
+     * @param $value
+     * @param bool $escapeWithDriver
      *
      * @return string
      */
-    public static function escape( $string, $escapeWithMySql = true )
+    public static function escape( $value, $escapeWithDriver = true )
     {
-        if ( $escapeWithMySql )
+        if ( $escapeWithDriver )
         {
-            $result = self::$dbConnection->escapeString( $string );
+            $escapeFunc = self::$escapeFunc;
+            $result = $escapeFunc( $value );
         }
         else
         {
-            $result = addslashes( $string );
+            $result = addslashes( $value );
         }
         return $result;
     }
@@ -281,7 +305,7 @@ class DbUtils
      *
      * @phan-suppress PhanUndeclaredClassMethod
      */
-    private static function getConnectionInstance()
+    private static function getConnectionInstance():IDbConnection
     {
         //TODO read from config what class to use
         $result = new DbConnectionImpl();

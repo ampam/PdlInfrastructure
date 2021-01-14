@@ -17,7 +17,6 @@ use Com\Mh\Ds\Infrastructure\Data\Db\SqlOptions;
 use Com\Mh\Ds\Infrastructure\Strings\StringUtils;
 use Com\Mh\Ds\Infrastructure\Data\Attributes\Attributes;
 use Com\Mh\Ds\Infrastructure\Data\Db\DbOperations;
-use Com\Mh\Ds\Infrastructure\Data\Db\DbUtils;
 use Doctrine\Inflector\InflectorFactory;
 use Exception;
 use ReflectionClass;
@@ -335,22 +334,23 @@ abstract class Row extends Attributable
 
     /**
      * @param array $dbRow
-     * @param bool $escapeWithMySql
+     * @param bool $escapeWithDriver
      *
      * @return string
      *
      */
-    protected static function dbRow2InsertValues( array $dbRow, bool $escapeWithMySql )
+    protected static function dbRow2InsertValues( array $dbRow, bool $escapeWithDriver )
     {
         $values = [];
 
-        $mysqlDb = DbUtils::getDbConnection();
+        //$mysqlDb = DbUtils::getDbConnection();
 
         foreach ( $dbRow as $columnName => $value )
         {
-            if ( $escapeWithMySql )
+            if ( $escapeWithDriver )
             {
-                $values[] = "'" . $mysqlDb->escapeString( $value ) . "'";
+                //$values[] = "'" . $mysqlDb->escapeString( $value ) . "'";
+                $values[] = "'" . self::$rowFactory->getDb()->escapeString( $value ) . "'";
             }
             else
             {
