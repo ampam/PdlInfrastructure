@@ -26,7 +26,8 @@ abstract class WhereStatement extends BoolExpression
 
     use RowWriteTraits
     {
-        _multiUpdate as _traitMultiUpdate;
+        //_multiUpdate as _traitMultiUpdate;
+        _updateFromArray as _updateFromArray;
         _delete as _traitDelete;
     }
 

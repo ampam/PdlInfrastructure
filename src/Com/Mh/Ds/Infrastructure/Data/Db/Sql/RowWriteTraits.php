@@ -10,7 +10,6 @@ namespace Com\Mh\Ds\Infrastructure\Data\Db\Sql;
 
 
 use Com\Mh\Ds\Infrastructure\Data\Row;
-use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
 use Com\Mh\Ds\Infrastructure\Data\Db\SqlOptions;
 
 /**
@@ -40,16 +39,17 @@ trait RowWriteTraits
         return $result;
     }
 
+
     /**
-     * @param UpdateStatement $update
+     * @param array $fieldArray
      * @param WhereStatement|null $where
      *
      * @return int
      */
-    public function _multiUpdate( UpdateStatement $update, WhereStatement $where = null )
+    public function _updateFromArray( array $fieldArray, WhereStatement $where = null )
     {
         $result = Row::multiUpdate( [
-            SqlOptions::Fields => $update,
+            SqlOptions::Fields => $fieldArray,
             SqlOptions::Where => $where
         ], $this->fullTableName() );
 

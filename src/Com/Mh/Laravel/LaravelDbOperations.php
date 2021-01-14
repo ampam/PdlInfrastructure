@@ -206,7 +206,9 @@ class LaravelDbOperations implements IDbOperations
      */
     public function escapeString( $value ): string
     {
-        $result = Db::getPdo()->quote( $value );
+        $quotedString = Db::getPdo()->quote( $value );
+        $parts = explode("'", $quotedString );
+        $result = $parts[ 1 ] ?? $parts[ 0 ];
         return $result;
     }
 
