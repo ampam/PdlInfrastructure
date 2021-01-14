@@ -10,7 +10,7 @@ namespace Com\Mh\Ds\Infrastructure\Data\Db\Sql;
 
 
 use Com\Mh\Ds\Infrastructure\Data\Row;
-use Com\Mh\Ds\Infrastructure\Data\WhereStatement;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
 use Com\Mh\Ds\Infrastructure\Data\Db\SqlOptions;
 
 /**

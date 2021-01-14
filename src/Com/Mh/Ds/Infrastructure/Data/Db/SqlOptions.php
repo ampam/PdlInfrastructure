@@ -11,7 +11,7 @@ namespace Com\Mh\Ds\Infrastructure\Data\Db;
 use Com\Mh\Ds\Infrastructure\Data\Db\Sql\FieldList;
 use Com\Mh\Ds\Infrastructure\Data\Db\Sql\LimitStatement;
 use Com\Mh\Ds\Infrastructure\Data\Db\Sql\OrderByStatement;
-use Com\Mh\Ds\Infrastructure\Data\WhereStatement;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
 use Com\Mh\Ds\Infrastructure\Diagnostic\Debug;
 
 /**

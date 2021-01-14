@@ -12,6 +12,7 @@ namespace Com\Mh\Ds\Infrastructure\Data;
 use Com\Mh\Ds\Infrastructure\Cache\Cache;
 use Com\Mh\Ds\Infrastructure\Data\Attributes\Attributable;
 use Com\Mh\Ds\Infrastructure\Data\Db\IDbOperations;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
 use Com\Mh\Ds\Infrastructure\Data\Db\SqlOptions;
 use Com\Mh\Ds\Infrastructure\Strings\StringUtils;
 use Com\Mh\Ds\Infrastructure\Data\Attributes\Attributes;

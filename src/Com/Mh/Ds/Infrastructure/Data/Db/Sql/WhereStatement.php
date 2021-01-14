@@ -6,15 +6,11 @@
  * Time: 6:49 PM
  */
 
-namespace Com\Mh\Ds\Infrastructure\Data;
+namespace Com\Mh\Ds\Infrastructure\Data\Db\Sql;
 
 
 use Exception;
-use Com\Mh\Ds\Infrastructure\Data\Db\Sql\BoolExpression;
-use Com\Mh\Ds\Infrastructure\Data\Db\Sql\FieldList;
-use Com\Mh\Ds\Infrastructure\Data\Db\Sql\OrderByStatement;
-use Com\Mh\Ds\Infrastructure\Data\Db\Sql\RowReadTraits;
-use Com\Mh\Ds\Infrastructure\Data\Db\Sql\RowWriteTraits;
+
 
 /**
  * Class WhereStatement

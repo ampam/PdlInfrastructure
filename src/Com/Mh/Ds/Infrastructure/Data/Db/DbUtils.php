@@ -14,7 +14,7 @@ use Com\Mh\Ds\Infrastructure\Data\Row;
 use Exception;
 use Com\Mh\Ds\Infrastructure\Data\Db\MySql\DbConnectionImpl;
 use Com\Mh\Ds\Infrastructure\Data\Db\MySql\TableInfo;
-use Com\Mh\Ds\Infrastructure\Data\WhereStatement;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
 
 
 /**
