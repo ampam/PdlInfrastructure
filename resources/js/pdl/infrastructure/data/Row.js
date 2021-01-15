@@ -2,10 +2,10 @@
 
 /**
  *
- * @class {com.mh.ds.infrastructure.data.Row}
+ * @class {Row}
  * @property {object} __propertyAttributes
  */
-com.mh.ds.infrastructure.data.Row = function() {
+function Row() {
 
     /**
      * @returns int
@@ -51,5 +51,11 @@ com.mh.ds.infrastructure.data.Row = function() {
         return result;
     };
 
-};
-
+}
+global.com = global.com || {};
+com.mh = com.mh || {};
+com.mh.ds = com.mh.ds || {};
+com.mh.ds.infrastructure = com.mh.ds.infrastructure || {};
+com.mh.ds.infrastructure.data = com.mh.ds.infrastructure.data || {}
+com.mh.ds.infrastructure.data.Row = Row;
+module.exports = Row;
