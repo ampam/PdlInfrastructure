@@ -15,6 +15,7 @@ class PdlServiceProvider extends ServiceProvider
 
     const ConfigPath = __DIR__ . '/../../../../config/pdl/';
     const ResourceJsPath = __DIR__ . '/../../../../resources/js/pdl/';
+    const PdlProjectPath = __DIR__ . '/../../../../pdl-project/';
     const ConfigFile = self::ConfigPath . 'config.php';
 
     /**
@@ -34,11 +35,26 @@ class PdlServiceProvider extends ServiceProvider
             $this->publishes( [
                 self::ResourceJsPath => self::getResourcesDestPath( 'js/pdl/' ),
             ], 'pdl-js-resources' );
+
+            $this->publishes( [
+                self::PdlProjectPath => self::getPdlProjectDestPath( '' ),
+            ], 'pdl-project' );
         }
 
         $rowFactory = LaravelRowFactory::getInstance();
 
         Row::setDefaultFactory( $rowFactory );
+    }
+
+    /**
+     * @param $path
+     *
+     * @return mixed
+     */
+    private static function getPdlProjectDestPath( $path )
+    {
+        $result = base_path( "pdl-project/{$path}" );
+        return $result;
     }
 
     /**
