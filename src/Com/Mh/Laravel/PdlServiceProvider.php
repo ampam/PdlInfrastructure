@@ -14,7 +14,7 @@ class PdlServiceProvider extends ServiceProvider
 {
 
     const ConfigPath = __DIR__ . '/../../../../config/pdl/';
-    const ResourceJsPath = __DIR__ . '/../../../../resources/js/pdl';
+    const ResourceJsPath = __DIR__ . '/../../../../resources/js/pdl/';
     const ConfigFile = self::ConfigPath . 'config.php';
 
     /**
