@@ -60,16 +60,15 @@ function copyCompiledPhp() {
 
 function copyGeneratedPhpDb() {
 
-    let dirParts = pdlConfig.db2Pdl.pdl.db2PdlSourceDest.split( '/' )
+    let dirParts = pdlConfig.db2Pdl.pdl.db2PdlSourceDest.split( '/' );
 
-    dirParts.forEach( part => {
-        const result = part.charAt( 0 ).toUpperCase() + part.substr( 1 );
-        return result;
-    } );
+    for ( let i = 0; i < dirParts.length; i++ )
+    {
+        dirParts[ i ] = dirParts[ i ].charAt( 0 ).toUpperCase() + dirParts[ i ].substr( 1 );
+    }
 
     const dbClassesDir = dirParts.join( '/' );
     const dest = path.join( process.env.GEN_OUTPUT_PHP, dbClassesDir );
-
 
     fs.ensureDirSync( dest );
     tryCleanDest( dest );

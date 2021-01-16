@@ -39,7 +39,7 @@ function mergeConfig( config ) {
     const dbSection = getSectionByName( result, "DbFiles");
     dbSection.files.dbFiles = [ db2PdlSourceDest + '/*.pdl' ];
 
-    const phpJsSection = getSectionByName( result, "'Php And Js'");
+    const phpJsSection = getSectionByName( result, "Php And Js");
     phpJsSection.files.phpJsExclude = dbSection.files.dbFiles;
 
     result.db2Pdl.pdl.db2PdlSourceDest = db2PdlSourceDest;
