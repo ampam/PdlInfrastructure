@@ -23,7 +23,7 @@ module.exports = {
     ],
 
     outputDir: process.env.PDL_OUTPUT,
-    tempDir: 'temp',
+    tempDir: 'output/temp',
 
     db2PdlSourceDest: Db2PdlSourceDest,
 
