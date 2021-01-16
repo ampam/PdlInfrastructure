@@ -1,0 +1,25 @@
+{
+    "csharp": {
+        "enabled": false,
+        "shortProperties": true
+    },
+
+    "js": {
+        "enabled": true,
+        "namespaceFile": "",
+        "useLet": true
+    },
+
+    "as3": {
+        "enabled": false
+    },
+
+    "php": {
+        "enabled": true,
+        "psr4": true,
+		"ignoreNamespaces": [
+			"com.mh.ds.domain.components.properties.attributes"
+		]
+    }
+
+}

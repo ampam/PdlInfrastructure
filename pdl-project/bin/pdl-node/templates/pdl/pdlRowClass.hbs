@@ -1,0 +1,29 @@
+/**
+ *  {{companyName}} Generated File with Pdl
+ *  {{project}}
+ *  @version: {{version}}
+ *
+ *
+ */
+
+namespace {{pdlEntitiesNamespace}}
+{
+
+using com.mh.ds.infrastructure.data.Row;
+
+public class {{rowClass}}: Row
+{
+{{#fieldsInfo}}
+{{#if pdlAttributes}}
+
+    {{{pdlAttributes}}}
+    public property {{pdlType}} {{camelCase}};
+
+{{else}}
+    {{pdlType}} {{camelCase}};
+{{/if}}
+{{/fieldsInfo}}
+
+}
+
+}

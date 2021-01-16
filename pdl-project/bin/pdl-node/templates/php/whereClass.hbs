@@ -1,0 +1,161 @@
+<?php
+
+/**
+ *  {{companyName}} Generated File with Pdl
+ *  {{project}}
+ *  @version: {{version}}
+ *
+ *   Bool Expression Helper for table {{name}}
+ *   {{whereClass}}
+ */
+
+namespace {{phpEntitiesNamespace}};
+
+use Com\Mh\Ds\Infrastructure\Data\Row;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\FieldList;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
+
+/**
+ * @class {{whereClass}}
+ * @extends BoolExpression
+ * @package {{phpEntitiesNamespace}}
+ *
+ */
+class {{whereClass}} extends WhereStatement
+{
+    use {{columnsListTraits}};
+
+    const FullTableName = '{{dbName}}.{{tableName}}';
+
+    public static $rowClass = {{rowClass}}::class;
+    public static $fieldListClass = {{fieldListClass}}::class;
+    public static $whereClass = self::class;
+    public static $orderByClass = {{orderByClass}}::class;
+
+
+    /**
+     * {{whereClass}} constructor.
+     *
+     * @param {{whereClass}} $parent
+     */
+    public function __construct( {{whereClass}} $parent = null )
+    {
+        parent::__construct( $parent );
+        $this->_addVariables( {{columnsDefinitionClass}}::$columns );
+    }
+
+    /**
+     * @return {{fieldListClass}}
+     */
+    public function _fieldList()
+    {
+        /** @var  {{fieldListClass}} $result */
+        $result = parent::_fieldList();
+        return $result;
+    }
+
+    /**
+     * @return {{orderByClass}}
+     */
+    public function _orderBy()
+    {
+        /** @var {{orderByClass}} $result */
+        $result = parent::_orderBy();
+        return $result;
+    }
+
+    /**
+     * @param $column
+     * @param $param
+     *
+     * @return $this
+     */
+    public function _useColumn( $column, $param = null )
+    {
+        return $this->_addColumnTerm( $column, $param );
+    }
+
+    /**
+     * @return string
+     */
+    public function getRowClass()
+    {
+        return self::$rowClass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWhereClass()
+    {
+        return self::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFieldListClass()
+    {
+        return self::$fieldListClass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderByClass()
+    {
+        return self::$orderByClass;
+    }
+
+    /**
+     * @return {{rowClass}}
+     */
+    public function _loadRow()
+    {
+        return parent::_loadRow();
+    }
+
+    /**
+     * @param WhereStatement|null $where
+     * @param FieldList|null $fieldList
+     * @param bool $byDbId
+     *
+     * @return {{rowClass}}[]|Row[]
+     */
+    public function _loadRows( WhereStatement $where = null, FieldList $fieldList = null, $byDbId = false )
+    {
+        assert( $fieldList === null || $fieldList === $this );
+
+        $this->fieldList = $fieldList ?? $this->fieldList;
+
+        /** @var {{rowClass}}[] $result */
+        $result = parent::_traitLoadRows( $this, $this->fieldList, $byDbId );
+        return $result;
+    }
+
+    /**
+     * @param WhereStatement|null $where
+     * @param FieldList|null $fieldList
+     *
+     * @return {{rowClass}}[]|Row[]
+     */
+    public function _loadRowsById( WhereStatement $where = null, FieldList $fieldList = null )
+    {
+        assert( $where === null || $where === $this );
+
+        /** @var {{rowClass}}[] $result */
+        $result = parent::_loadRows( $this, $fieldList, true );
+        return $result;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function fullTableName()
+    {
+        return self::FullTableName;
+    }
+
+
+}

@@ -1,0 +1,170 @@
+<?php
+/**
+ *  {{companyName}} Generated File with Pdl
+ *  {{project}}
+ *  @version: {{version}}
+ *
+ *   Column List Traits for row {{name}}
+ *   {{fieldListClass}}
+ */
+
+namespace {{phpEntitiesNamespace}};
+
+use Com\Mh\Ds\Infrastructure\Data\Row;
+use Exception;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\Column;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\FieldList;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
+
+/**
+ * @class {{fieldListClass}}
+ * @extends ColumnList
+ * @package {{phpEntitiesNamespace}}
+ *
+ */
+class {{fieldListClass}} extends FieldList
+{
+    use {{columnsListTraits}};
+
+    const FullTableName = '{{dbName}}.{{tableName}}';
+
+    public static $rowClass = {{rowClass}}::class;
+    public static $fieldListClass = self::class;
+    public static $orderByClass = {{orderByClass}}::class;
+
+    /**
+     * {{fieldListClass}} constructor.
+     *
+     * @param {{whereClass}} $where
+     */
+    public function __construct( {{whereClass}} $where = null )
+    {
+        parent::__construct( $where );
+    }
+
+
+    /**
+     * @param $column
+     *
+     * @param $param
+     *
+     * @return $this
+     */
+    protected function _useColumn( $column, /** @noinspection PhpUnusedParameterInspection */ $param = null )
+    {
+        $columnString = Column::toString( $column );
+        return $this->_add( $columnString );
+    }
+
+    /**
+     * @param WhereStatement|null $where
+     * @param FieldList|null $fieldList
+     *
+     * @return {{rowClass}}|Row
+     *
+     * @throws Exception
+     */
+    public function _loadRow( WhereStatement $where = null, FieldList $fieldList = null )
+    {
+        assert( $fieldList === null || $fieldList === $this );
+
+        $this->where = $where ?? $this->where;
+
+        /** @var {{rowClass}} $result */
+        $result = $this->_loadRowWhere();
+
+        return $result;
+    }
+
+    /**
+     * @param int $dbId
+     * @param FieldList|null $fieldList
+     *
+     * @return {{rowClass}}
+     */
+    public function _loadRowById( $dbId, FieldList $fieldList = null )
+    {
+        assert( $fieldList === null || $fieldList === $this );
+
+        /** @var {{rowClass}} $result */
+        $result = parent::_traitLoadRowById( $dbId, $this );
+
+        return $result;
+    }
+
+    /**
+     *
+     * @return {{rowClass}}
+     * @throws Exception
+     */
+    public function _loadRowWhere()
+    {
+        /** @var {{rowClass}} $result */
+        $result = parent::_loadRowWhere();
+        return $result;
+    }
+
+    /**
+     * @param WhereStatement|null $where
+     * @param FieldList|null $fieldList
+     * @param bool $byDbId
+     *
+     * @return {{rowClass}}[]|Row[]
+     */
+    public function _loadRows( WhereStatement $where = null, FieldList $fieldList = null, $byDbId = false )
+    {
+        assert( $fieldList === null || $fieldList === $this );
+
+        $this->where = $where ?? $this->where;
+
+        /** @var {{rowClass}}[] $result */
+        $result = parent::_traitLoadRows( $this->where, $this, $byDbId );
+        return $result;
+    }
+
+    /**
+     * @param WhereStatement|null $where
+     * @param FieldList|null $fieldList
+     *
+     * @return {{rowClass}}[]|Row[]
+     */
+    public function _loadRowsById( WhereStatement $where = null, FieldList $fieldList = null )
+    {
+        assert( $fieldList === null || $fieldList === $this );
+
+        $this->where = $where ?? $this->where;
+
+        /** @var {{rowClass}}[] $result */
+        $result = parent::_loadRows( $this->where, $this, true );
+        return $result;
+    }
+
+
+
+    /**
+     * @return string
+     */
+    public function getRowClass()
+    {
+        return self::$rowClass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderByClass()
+    {
+        return self::$orderByClass;
+    }
+
+    /**
+     * @return {{orderByClass}}
+     */
+    public function _orderBy()
+    {
+        /** @var {{orderByClass}} $result */
+        $result = parent::_orderBy();
+        return $result;
+    }
+
+}

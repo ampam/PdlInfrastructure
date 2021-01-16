@@ -1,0 +1,45 @@
+<?php
+/**
+ *  {{companyName}} Generated File with Pdl
+ *  {{project}}
+ *  @version: {{version}}
+ *
+ *   Column List Traits for row {{name}}
+ *   {{columnsListTraits}}
+ */
+
+namespace {{phpEntitiesNamespace}};
+
+use Com\Mh\Ds\Infrastructure\Data\ColumnsBase;
+use Com\Mh\Ds\Infrastructure\Data\Sql\WhereStatement;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\BoolExpression;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\FieldList;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\OrderByStatement;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\RowReadTraits;
+use Com\Mh\Ds\Infrastructure\Data\Db\Sql\RowWriteTraits;
+
+
+/**
+ * @class {{columnsListTraits}}
+ * @package {{phpEntitiesNamespace}}
+ *
+ */
+trait {{columnsListTraits}}
+{
+    use ColumnsBase;
+
+
+{{#fieldsInfo}}
+    /**
+     * @param $param
+     *
+     * @return $this|BoolExpression|WhereStatement|FieldList|OrderByStatement|{{../whereClass}}|{{../fieldListClass}}|{{../orderByClass}}|RowReadTraits|RowWriteTraits
+     */
+    public function {{camelCase}}( $param = null )
+    {
+        return $this->_useColumn( {{../columnsDefinitionClass}}::{{pascalCase}}, $param );
+    }
+
+{{/fieldsInfo}}
+
+}
