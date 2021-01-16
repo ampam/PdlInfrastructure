@@ -4,13 +4,13 @@ dotenv.config();
 
 const PdlCompilerTemplatesDir = 'pdl-templates';
 
-const OrganizartionName = "My Organization";
+const OrganizationName = "My Organization";
 const ProjectName = 'My Project';
 const Db2PdlSourceDest = 'my-organization/my-project/domain/data';
 
 module.exports = {
 
-    companyName: OrganizartionName,
+    companyName: OrganizationName,
     project: ProjectName,
     version: '1.0.0',
 
@@ -19,7 +19,6 @@ module.exports = {
     rebuild: false,
     verbose: false,
     src: [
-        '.',
         'src'
     ],
 

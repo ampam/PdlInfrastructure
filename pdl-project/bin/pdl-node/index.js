@@ -4,7 +4,7 @@ const path = require( 'path' );
 const extend = require( 'extend' );
 const child_process = require( 'child_process' );
 const glob = require( 'glob' );
-require('colors');
+require( 'colors' );
 
 const pdlUtils = require( './utils' );
 const verboseLog = pdlUtils.verboseLog;
@@ -35,9 +35,10 @@ let configFile = path.join( cwd, 'pdl.config.js' );
 
 let globalExitCode = 0;
 
+let exclusionFiles = [];
+
 processCommandLine();
 run();
-
 
 /**
  *
@@ -48,7 +49,6 @@ function run() {
 
     processConfig();
 
-
     if ( rebuild )
     {
         cleanTemporal();
@@ -58,13 +58,13 @@ function run() {
     pdlFileTimes = fileTimes.createFileTimes( path.join( pdlConfig.tempDir, "pdlFileTimes.json" ) );
     pdlFileTimes.read();
 
-    console.log('>>>>Begin PDL compilation and generation');
+    console.log( '>>>>Begin PDL compilation and generation' );
     compileSections();
     pdlFileTimes.write();
 
     console.log( 'pdl files compiled: ' + childInstances.toString().green.bold + ' file(s)' );
-    console.log('<<<<End PDL compilation and generation');
-    console.log('');
+    console.log( '<<<<End PDL compilation and generation' );
+    console.log( '' );
 
     if ( globalExitCode === 0 )
     {
@@ -140,21 +140,6 @@ function cleanOutput() {
 
 /**
  *
- * @param exclusionList
- * @param file
- * @returns {boolean}
- */
-function isInExclusionList( exclusionList, file ) {
-    let result = false;
-    for ( let i = 0; i < exclusionList.length && !result; i++ )
-    {
-        result = file.indexOf( exclusionList[ i ] ) >= 0;
-    }
-    return result;
-}
-
-/**
- *
  * @param section
  * @param profileName
  * @param fileOrPattern
@@ -166,27 +151,21 @@ function unwind( section, profileName, fileOrPattern ) {
     const profile = pdlConfig.profiles[ profileName ];
     const sourcePaths = (section.src || []).concat( profile.src || [] ).concat( pdlConfig.src || [] );
 
-    const exclusionList = section.files[ profileName + 'Exclude' ] || [];
-
-    for ( let i = 0; i < sourcePaths.length && result.length <= 0; i++ )
-    {
+    sourcePaths.forEach( sourcePath => {
         /**
          * @type string[]
          */
-        const files = glob.sync( path.join( sourcePaths[ i ], fileOrPattern ) );
+        const files = glob.sync( path.join( sourcePath, fileOrPattern ) );
         files.forEach( function( file ) {
-            if ( !isInExclusionList( exclusionList, file ) )
+            if ( exclusionFiles.indexOf( file ) < 0 )
             {
                 result.push( file );
             }
         } );
-    }
+    } )
 
     return result;
 }
-
-
-
 
 /**
  *
@@ -195,7 +174,6 @@ function unwind( section, profileName, fileOrPattern ) {
 function errorLog( value ) {
     console.log( value.red.bold );
 }
-
 
 /**
  *
@@ -254,6 +232,17 @@ function compileSectionProfile( profileName, section ) {
         section.outputDir || profile.outputDir || pdlConfig.outputDir,
         profile.configFile
     ];
+
+    exclusionFiles = [];
+    const exclusionGlobs = section.files[ profileName + 'Exclude' ] || [];
+    const sourcePaths = (section.src || []).concat( profile.src || [] ).concat( pdlConfig.src || [] );
+
+    sourcePaths.forEach( sourcePath => {
+        exclusionGlobs.forEach( globPattern => {
+            const files = glob.sync( path.join( sourcePath, globPattern ) );
+            exclusionFiles = exclusionFiles.concat( files );
+        } );
+    } );
 
     files.forEach( function( fileOrPattern ) {
 
@@ -316,7 +305,7 @@ function compileFile( file, commandArguments ) {
 
     childInstances++;
 
-    verboseLog( compiler + " " + expandedArguments.join(' ') );
+    verboseLog( compiler + " " + expandedArguments.join( ' ' ) );
 
     const spawnResult = child_process.spawnSync( compiler, expandedArguments,
         {
