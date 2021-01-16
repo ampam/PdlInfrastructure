@@ -1,24 +1,22 @@
 {
-    "csharp": {
-        "shortProperties": true
-    },
-
     "js": {
         "enabled": true,
+        "generateAsObject": false,
         "namespaceFile": "",
         "useLet": true
     },
-
-    "as3": {
-        "enabled": true
-    },
-
     "php": {
         "enabled": false,
         "psr4": true,
 		"ignoreNamespaces": [
 			"com.mh.ds.domain.components.properties.attributes"
 		]
+    },
+    "csharp": {
+        "enabled": false,
+        "shortProperties": true
+    },
+    "as3": {
+        "enabled": false
     }
-
 }
