@@ -34,6 +34,7 @@ class SqlOptions
     const ForceIndex = 'forceIndex';
     const Log = 'log';
     const Order = 'order';
+    const Rows = 'rows';
 
     /**
      * @param array $options

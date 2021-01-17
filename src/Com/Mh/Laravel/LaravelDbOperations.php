@@ -9,7 +9,9 @@ use Com\Mh\Ds\Infrastructure\Data\Db\DbUtils;
 use Com\Mh\Ds\Infrastructure\Data\Db\IDbOperations;
 use Com\Mh\Ds\Infrastructure\Data\Db\MySql\MySqlUtils;
 use Com\Mh\Ds\Infrastructure\Data\Db\SqlOptions;
+use Com\Mh\Ds\Infrastructure\Data\Row;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -28,10 +30,10 @@ class LaravelDbOperations implements IDbOperations
      */
     public function __construct()
     {
-        DbUtils::setEscapeFunction( function( $value ):string {
+        DbUtils::setEscapeFunction( function ( $value ): string {
             $result = $this->escapeString( $value );
             return $result;
-        });
+        } );
     }
 
 
@@ -135,15 +137,35 @@ class LaravelDbOperations implements IDbOperations
      */
     public function multiInsert( $options, $logIt = false )
     {
-        $result = 0;
-        $sql = SqlOptions::toMultiInsert( $options );
+        $result = [];
+        /**
+         * @var Row[]
+         */
+        $rows = $options[ SqlOptions::Rows ];
+        $arrayRows = [];
 
-        if ( $logIt )
+        /**
+         * @var Row $row
+         */
+        foreach ( $rows as $row )
         {
-            Log::debug( $sql );
+            $arrayRow = $row->toDbRowForInsert();
+            $row->setDates( $arrayRow );
+
+            $arrayRows[] = $arrayRow;
         }
-//        $this->dbConnection->executeWrite( $sql );
-//        $result = $this->dbConnection->insertIds();
+
+        $table = Db::table( $options[ 'table' ] );
+        $table->insert( $arrayRows );
+        $id = DB::getPdo()->lastInsertId();
+
+        $autoIncrementStep = Config::get( 'pdl.mysql.autoIncrementStep', 1 );
+
+        for ( $index = 0; $index < count( $rows ); $index++ )
+        {
+            $result[ $index ] = $id;
+            $id += $autoIncrementStep;
+        }
 
         return $result;
     }
@@ -207,7 +229,7 @@ class LaravelDbOperations implements IDbOperations
     public function escapeString( $value ): string
     {
         $quotedString = Db::getPdo()->quote( $value );
-        $parts = explode("'", $quotedString );
+        $parts = explode( "'", $quotedString );
         $result = $parts[ 1 ] ?? $parts[ 0 ];
         return $result;
     }

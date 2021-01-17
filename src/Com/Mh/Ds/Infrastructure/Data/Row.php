@@ -479,7 +479,7 @@ abstract class Row extends Attributable
     public function create()
     {
         $dbRow = $this->toDbRowForInsert();
-        $this->setDates( $dbRow );
+        $this->setDates( $dbRow, $this->getDb()->getNowString() );
 
         $result = $this->getDb()->insert( [
             SqlOptions::Table => static::FullTableName,
@@ -493,14 +493,14 @@ abstract class Row extends Attributable
     }
 
     /**
-     * @return int
+     * @param $dbRow
+     * @param string $now
      */
-    public function setDates( &$dbRow )
+    public function setDates( &$dbRow, $now = null )
     {
-        $this->setDateCreated( $dbRow );
-        $this->setDateModified( $dbRow );
-        return $result;
-
+        $now = $now ?? $this->getDb()->getNowString();
+        $this->setDateCreated( $dbRow, $now );
+        $this->setDateModified( $dbRow, $now );
     }
 
     /**
@@ -753,7 +753,7 @@ abstract class Row extends Attributable
     /**
      * @return array
      */
-    protected function toDbRowForInsert()
+    public function toDbRowForInsert()
     {
         $result = $this->toDbRowNoIdNoDates( $this->getCalculatedColumns() );
 
@@ -763,7 +763,7 @@ abstract class Row extends Attributable
     /**
      * @return array
      */
-    protected function toDbRowNoId()
+    public function toDbRowNoId()
     {
         $result = $this->toDbRow( [ $this->_dbIdProperty ] );
         return $result;
@@ -888,37 +888,47 @@ abstract class Row extends Attributable
      */
     public static function multiInsert( array &$rows )
     {
+
         $result = [];
+
 
         if ( !empty( $rows ) )
         {
-
-            $values = [];
-
-            foreach ( $rows as &$row )
-            {
-                $dbRow = $row->toDbRowForInsert();
-                $row->setDateModified( $dbRow );
-
-                $values[] = self::dbRow2InsertValues( $dbRow, true );
-            }
-
             $firstRow = $rows[ 0 ];
             $firstDbRow = $firstRow->toDbRowNoId();
 
-            $db = $firstRow->getDb();
-
-            $result = $db->multiInsert( [
+            $firstRow->getDb()->multiInsert( [
                 SqlOptions::Table => $firstRow->getFullTableName(),
-                SqlOptions::Fields => array_keys( $firstDbRow ),
-                SqlOptions::Values => $values
+//                SqlOptions::Fields => array_keys( $firstDbRow ),
+                SqlOptions::Rows => $rows
             ] );
-
-            for ( $i = 0; $i < count( $result ); $i++ )
-            {
-                $rows[ $i ]->setDbId( $result[ $i ] );
-            }
-
+//
+//            $values = [];
+//
+//            foreach ( $rows as &$row )
+//            {
+//                $dbRow = $row->toDbRowForInsert();
+//                $row->setDates( $dbRow );
+//
+//                $values[] = self::dbRow2InsertValues( $dbRow, true );
+//            }
+//
+//            $firstRow = $rows[ 0 ];
+//            $firstDbRow = $firstRow->toDbRowNoId();
+//
+//            $db = $firstRow->getDb();
+//
+//            $result = $db->multiInsert( [
+//                SqlOptions::Table => $firstRow->getFullTableName(),
+//                SqlOptions::Fields => array_keys( $firstDbRow ),
+//                SqlOptions::Values => $values
+//            ] );
+//
+//            for ( $i = 0; $i < count( $result ); $i++ )
+//            {
+//                $rows[ $i ]->setDbId( $result[ $i ] );
+//            }
+//
         }
 
         return $result;
@@ -1221,11 +1231,11 @@ abstract class Row extends Attributable
      * @param $columnValues
      *
      */
-    private function setDateModified( &$columnValues )
+    private function setDateModified( &$columnValues, $now = null )
     {
         if ( !empty( $this->dateModifiedColumn ) )
         {
-            $now = $this->getDb()->getNowString();
+            $now = $now ?? $this->getDb()->getNowString();
             $columnValues[ $this->dateModifiedColumn ] = $now;
             $this->setColumnValue( $this->dateModifiedColumn, $now );
         }
@@ -1236,11 +1246,11 @@ abstract class Row extends Attributable
      *
      * @return mixed
      */
-    private function setDateCreated( &$columnValues )
+    private function setDateCreated( &$columnValues, $now = null )
     {
         if ( !empty( $this->dateCreatedColumn ) )
         {
-            $now = $this->getDb()->getNowString();
+            $now = $now ?? $this->getDb()->getNowString();
             $columnValues[ $this->dateCreatedColumn ] = $now;
             $this->setColumnValue( $this->dateCreatedColumn, $now );
         }

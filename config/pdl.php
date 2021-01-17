@@ -1,5 +1,6 @@
 <?php
 
+
 return [
     'server_timezone' => 'America/New_York',
     'logFile' => $_SERVER['DOCUMENT_ROOT'] . "/storage/logs/pdl.log",
@@ -24,7 +25,7 @@ return [
         'password' => env('DB_PASSWORD',''),
         'pconnect' => true,
         'db_name' => env('DB_DATABASE', 'my_db'),
-        'autoIncrementStep' => 4,
+        'autoIncrementStep' => 1,
         'charSet' => env('DB_CHARSET', 'utf8mb4'),
         'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
         'masters' => [
