@@ -11,7 +11,6 @@ namespace Com\Mh\Laravel;
 
 
 use Com\Mh\Ds\Infrastructure\Container\SingletonTrait;
-use Com\Mh\Ds\Infrastructure\Data\CommonColumns;
 use Com\Mh\Ds\Infrastructure\Data\Db\IDbOperations;
 use Com\Mh\Ds\Infrastructure\Data\IRowFactory;
 use Com\Mh\Ds\Infrastructure\Data\Row;
@@ -28,7 +27,7 @@ class LaravelRowFactory implements IRowFactory
     /**
      * @var string[]
      */
-    private $noDateModifiedTables = [];
+    private $noTimestampTables = [];
 
     public function __construct() { }
 
@@ -45,9 +44,15 @@ class LaravelRowFactory implements IRowFactory
 
         $result->setDateModifiedColumn(
 
-            key_exists( $result->getFullTableName(), $this->noDateModifiedTables )
+            key_exists( $result->getFullTableName(), $this->noTimestampTables )
                 ? ''
-                : CommonColumns::DateModified );
+                : LaravelCommonColumns::UpdatedAt );
+
+        $result->setDateCreatedColumn(
+
+            key_exists( $result->getFullTableName(), $this->noTimestampTables )
+                ? ''
+                : LaravelCommonColumns::CreatedAt );
 
         return $result;
     }
@@ -56,9 +61,9 @@ class LaravelRowFactory implements IRowFactory
     /**
      * @param string[] $tables
      */
-    public function setNoDateModifiedTables( array $tables )
+    public function setNoTimestampTables( array $tables )
     {
-        $this->noDateModifiedTables = $tables;
+        $this->noTimestampTables = $tables;
     }
 
 

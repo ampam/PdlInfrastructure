@@ -11,12 +11,12 @@ namespace Com\Mh\Ds\Infrastructure\Data;
 
 use Com\Mh\Ds\Infrastructure\Cache\Cache;
 use Com\Mh\Ds\Infrastructure\Data\Attributes\Attributable;
+use Com\Mh\Ds\Infrastructure\Data\Db\DbOperations;
 use Com\Mh\Ds\Infrastructure\Data\Db\IDbOperations;
 use Com\Mh\Ds\Infrastructure\Data\Db\Sql\WhereStatement;
 use Com\Mh\Ds\Infrastructure\Data\Db\SqlOptions;
 use Com\Mh\Ds\Infrastructure\Strings\StringUtils;
 use Com\Mh\Ds\Infrastructure\Data\Attributes\Attributes;
-use Com\Mh\Ds\Infrastructure\Data\Db\DbOperations;
 use Doctrine\Inflector\InflectorFactory;
 use Exception;
 use ReflectionClass;
@@ -52,6 +52,7 @@ abstract class Row extends Attributable
     private static $rowFactory;
 
     protected $dateModifiedColumn = '';
+    protected $dateCreatedColumn = '';
     private $_affectedRows = 0;
 
 
@@ -78,7 +79,7 @@ abstract class Row extends Attributable
     /**
      * @return array
      */
-    public function getCalculatedColumns():array
+    public function getCalculatedColumns(): array
     {
         return [];
     }
@@ -233,6 +234,14 @@ abstract class Row extends Attributable
     public function setDateModifiedColumn( string $value )
     {
         $this->dateModifiedColumn = $value;
+    }
+
+    /**
+     * @param String $value
+     */
+    public function setDateCreatedColumn( string $value )
+    {
+        $this->dateCreatedColumn = $value;
     }
 
 
@@ -470,8 +479,7 @@ abstract class Row extends Attributable
     public function create()
     {
         $dbRow = $this->toDbRowForInsert();
-
-        $this->setDateModified( $dbRow );
+        $this->setDates( $dbRow );
 
         $result = $this->getDb()->insert( [
             SqlOptions::Table => static::FullTableName,
@@ -480,6 +488,17 @@ abstract class Row extends Attributable
 
         $this->setDbId( $result );
 
+        return $result;
+
+    }
+
+    /**
+     * @return int
+     */
+    public function setDates( &$dbRow )
+    {
+        $this->setDateCreated( $dbRow );
+        $this->setDateModified( $dbRow );
         return $result;
 
     }
@@ -709,22 +728,32 @@ abstract class Row extends Attributable
     }
 
     /**
+     * @param array $excludedColumns
+     *
      * @return array
      */
     protected function toDbRowNoIdNoDates( array $excludedColumns )
     {
-        $result = $this->toDbRow( array_merge([
-            $this->_dbIdProperty,
-            $this->getColumnNameFromProperty( CommonColumns::DateAdded ),
-            $this->getColumnNameFromProperty( CommonColumns::DateModified )
-        ], $excludedColumns ) );
+
+        $commonExcluded = [ $this->_dbIdProperty ];
+        if ( !empty( $this->dateCreatedColumn ) )
+        {
+            $commonExcluded[] = $this->dateCreatedColumn;
+        }
+
+        if ( !empty( $this->dateModifiedColumn ) )
+        {
+            $commonExcluded[] = $this->dateModifiedColumn;
+        }
+
+        $result = $this->toDbRow( array_merge( $commonExcluded, $excludedColumns ) );
         return $result;
     }
 
     /**
      * @return array
      */
-    protected function toDbRowForInsert( )
+    protected function toDbRowForInsert()
     {
         $result = $this->toDbRowNoIdNoDates( $this->getCalculatedColumns() );
 
@@ -1191,16 +1220,29 @@ abstract class Row extends Attributable
     /**
      * @param $columnValues
      *
-     * @return mixed
      */
     private function setDateModified( &$columnValues )
     {
-        $dateModifiedColumn = $this->dateModifiedColumn;
-        $dateModified = $this->getDb()->getNowString();
         if ( !empty( $this->dateModifiedColumn ) )
         {
-            $columnValues[ $this->dateModifiedColumn ] = $dateModified;
-            $this->$dateModifiedColumn = $dateModified;
+            $now = $this->getDb()->getNowString();
+            $columnValues[ $this->dateModifiedColumn ] = $now;
+            $this->setColumnValue( $this->dateModifiedColumn, $now );
+        }
+    }
+
+    /**
+     * @param $columnValues
+     *
+     * @return mixed
+     */
+    private function setDateCreated( &$columnValues )
+    {
+        if ( !empty( $this->dateCreatedColumn ) )
+        {
+            $now = $this->getDb()->getNowString();
+            $columnValues[ $this->dateCreatedColumn ] = $now;
+            $this->setColumnValue( $this->dateCreatedColumn, $now );
         }
         return $columnValues;
     }
@@ -1284,10 +1326,10 @@ abstract class Row extends Attributable
      */
     private function calculateColumns()
     {
-        foreach( $this->getCalculatedColumns() as $calculatedColumnName )
+        foreach ( $this->getCalculatedColumns() as $calculatedColumnName )
         {
             $methodName = "calculate{$calculatedColumnName}";
-            if ( method_exists( $this, $methodName ))
+            if ( method_exists( $this, $methodName ) )
             {
                 $this->$calculatedColumnName = $this->$methodName();
             }

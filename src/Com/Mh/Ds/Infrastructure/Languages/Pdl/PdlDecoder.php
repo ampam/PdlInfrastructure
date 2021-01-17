@@ -29,8 +29,8 @@ class PdlDecoder
      */
     public static function setConfig( $config )
     {
-        self::$excludedRequestMembers = $config['excludedRequestMembers'] ?? [];
-        self::$excludedClasses = $config['excludedClasses'] ?? [];
+        self::$excludedRequestMembers = $config['pdl']['excludedRequestMembers'] ?? [];
+        self::$excludedClasses = $config['pdl']['excludedClasses'] ?? [];
     }
 
 

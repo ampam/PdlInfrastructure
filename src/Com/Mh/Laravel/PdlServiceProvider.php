@@ -3,7 +3,13 @@
 
 namespace Com\Mh\Laravel;
 
+use Com\Mh\Ds\Infrastructure\Data\Db\DbUtils;
+use Com\Mh\Ds\Infrastructure\Data\Db\MySql\MySqlUtils;
 use Com\Mh\Ds\Infrastructure\Data\Row;
+use Com\Mh\Ds\Infrastructure\Diagnostic\Debug;
+use Com\Mh\Ds\Infrastructure\Languages\LanguageUtils;
+use Com\Mh\Ds\Infrastructure\Languages\Pdl\PdlDecoder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -13,10 +19,10 @@ use Illuminate\Support\ServiceProvider;
 class PdlServiceProvider extends ServiceProvider
 {
 
-    const ConfigPath = __DIR__ . '/../../../../config/pdl/';
+    const ConfigPath = __DIR__ . '/../../../../config/';
     const ResourceJsPath = __DIR__ . '/../../../../resources/js/pdl/';
     const PdlProjectPath = __DIR__ . '/../../../../pdl-project/';
-    const ConfigFile = self::ConfigPath . 'config.php';
+    const ConfigFile = self::ConfigPath . 'pdl.php';
 
     /**
      * Bootstrap any package services.
@@ -29,7 +35,7 @@ class PdlServiceProvider extends ServiceProvider
         if ( $this->app->runningInConsole() )
         {
             $this->publishes( [
-                self::ConfigPath => self::getConfigDestPath( 'pdl/' ),
+                self::ConfigPath => self::getConfigDestPath( '/' ),
             ], 'pdl-php-config' );
 
             $this->publishes( [
@@ -40,10 +46,10 @@ class PdlServiceProvider extends ServiceProvider
                 self::PdlProjectPath => self::getPdlProjectDestPath( '' ),
             ], 'pdl-project' );
         }
-
-        $rowFactory = LaravelRowFactory::getInstance();
-
-        Row::setDefaultFactory( $rowFactory );
+        else
+        {
+            $this->initPdl();
+        }
     }
 
     /**
@@ -105,5 +111,28 @@ class PdlServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             self::ConfigFile, 'pdl'
         );
+    }
+
+    /**
+     *
+     */
+    private function setConfig()
+    {
+        $config = Config::get('pdl');
+        LanguageUtils::setConfig( $config );
+        PdlDecoder::setConfig( $config );
+        MySqlUtils::setConfig( $config );
+        DbUtils::setConfig( $config );
+        Debug::setConfig( $config );
+    }
+
+    /**
+     *
+     */
+    private function initPdl()
+    {
+        $rowFactory = LaravelRowFactory::getInstance();
+        Row::setDefaultFactory( $rowFactory );
+        $this->setConfig();
     }
 }
