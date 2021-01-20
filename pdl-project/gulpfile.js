@@ -1,6 +1,7 @@
 const fs = require( 'fs-extra' );
 const gulp = require( 'gulp' );
 const flatten = require( 'gulp-flatten' );
+const rename = require( 'gulp-rename' );
 const { task } = gulp;
 const newer = require( 'gulp-newer' );
 const path = require( 'path' );
@@ -14,6 +15,8 @@ const dotenv = require( 'dotenv' );
 dotenv.config();
 
 const outputDir = process.env.PDL_OUTPUT;
+const phpOutputDir = path.join( process.env.PDL_OUTPUT, 'php' );
+const pdlOutputDir = path.join( process.env.PDL_OUTPUT, 'pdl' );
 
 let doCleanDest = false;
 let doRebuild = false;
@@ -32,7 +35,7 @@ function copyDb2Pdl_2Source() {
         .pipe( gulp.dest( dest ) );
 }
 
-function copyGeneratedJs() {
+function copyCompiledJs() {
     const dest = process.env.GEN_OUTPUT_JS;
     fs.ensureDirSync( dest );
     tryCleanDest( dest );
@@ -43,8 +46,17 @@ function copyGeneratedJs() {
         '!' + path.join( outputDir, '/js/!**!/index.js' )
     ] )
         //.pipe( flatten() )
-        .pipe( newer( dest ) )
+        .pipe( rename( ( inputPath ) => renameCompiledFile( inputPath, 'js') ) )
         .pipe( gulp.dest( dest ) );
+}
+
+function renameCompiledFile( inputPath, type )
+{
+    const outputPath = path.join( process.env.PDL_OUTPUT, type )
+    if ( inputPath.dirname.indexOf( outputPath ) === 0 )
+    {
+        inputPath.dirname = inputPath.dirname.substr( outputPath.length + 1 );
+    }
 }
 
 function copyCompiledPhp() {
@@ -54,7 +66,7 @@ function copyCompiledPhp() {
 
     // noinspection JSCheckFunctionSignatures
     return gulp.src( path.join( process.env.PDL_OUTPUT, 'php/**/*.php' ) )
-        .pipe( flatten() )
+        .pipe( rename( ( inputPath ) => renameCompiledFile( inputPath, 'php') ) )
         .pipe( gulp.dest( dest ) );
 }
 
@@ -93,7 +105,7 @@ function postBuildCopy() {
     return new Promise( resolve => {
         copyCompiledPhp().on( 'end', () => {
             copyGeneratedPhpDb().on( 'end', () => {
-                copyGeneratedJs().on( 'end', () => {
+                copyCompiledJs().on( 'end', () => {
                     webpackCopy().on( 'end', resolve )
                 } )
             } )

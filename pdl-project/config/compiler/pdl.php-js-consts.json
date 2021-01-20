@@ -1,0 +1,22 @@
+{
+    "js": {
+        "enabled": true,
+        "generateAsObject": true,
+        "namespaceFile": "",
+        "useLet": true
+    },
+    "php": {
+        "enabled": true,
+        "psr4": true,
+        "ignoreNamespaces": [
+            "com.mh.ds.domain.components.properties.attributes"
+        ]
+    },
+    "csharp": {
+        "enabled": false,
+        "shortProperties": true
+    },
+    "as3": {
+        "enabled": false
+    }
+}

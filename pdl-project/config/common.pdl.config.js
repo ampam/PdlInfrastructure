@@ -95,6 +95,12 @@ module.exports = {
             templates: {
                 dir: PdlCompilerTemplatesDir
             }
+        },
+        phpJsConsts: {
+            configFile: 'config/compiler/pdl.php-js-consts.json',
+            templates: {
+                dir: path.join( PdlCompilerTemplatesDir, 'js-object' )
+            }
         }
     },
 
@@ -127,7 +133,6 @@ module.exports = {
                     Db2PdlSourceDest + '/*.pdl'
                 ]
             }
-
         },
     ],
 
