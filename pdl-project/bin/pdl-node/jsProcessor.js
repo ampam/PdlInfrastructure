@@ -1,44 +1,44 @@
-var fs = require( 'fs-extra' );
-var path = require( 'path' );
-var js2ts = require( './js2ts' );
-var jsdocParser = require( './jsdocParser' );
-var pdlUtils = require( './utils' );
+const fs = require( 'fs-extra' );
+const path = require( 'path' );
+const js2ts = require( './js2ts' );
+const jsdocParser = require( './jsdocParser' );
+const pdlUtils = require( './utils' );
 
-var configs = require( './config' );
-var templates = require( './templates' );
-var stringUtils = require( 'string' );
-var util = require( 'util' );
-var stringifyObject = require( 'stringify-object' );
+const configs = require( './config' );
+const templates = require( './templates' );
+const stringUtils = require( 'string' );
+//const util = require( 'util' );
+const stringifyObject = require( 'stringify-object' );
 
 /**
  *
  * @type {PdlConfig}
  */
-var pdlConfig = new configs.PdlConfig();
+let pdlConfig = new configs.PdlConfig();
 
 /**
  *
  * @type {JsConfig}
  */
-var jsConfig = new configs.JsConfig();
+let jsConfig = new configs.JsConfig();
 
-var globalIndexClasses = [];
-var usedInnerNamespaces = {};
-var namespaceTree = {};
-var namespaceFiles = {};
+let globalIndexClasses = [];
+let usedInnerNamespaces = {};
+let namespaceTree = {};
+let namespaceFiles = {};
 
 /**
  *
  * @type {TemplateUtils}
  */
-var templateUtils = null;
+let templateUtils = null;
 
 /**
  *
  */
 function generateGlobalIndexFile() {
 
-    var indexSource = templateUtils.render( jsConfig.globalIndex.template, {
+    let indexSource = templateUtils.render( jsConfig.globalIndex.template, {
         namespaceFiles: namespaceFiles,
         globalIndexClasses: globalIndexClasses
     } );
@@ -55,7 +55,7 @@ function generateGlobalIndexFile() {
  * @param filename
  */
 function outputSourceCode( dir, sourceCode, filename ) {
-    var file = path.join( dir, filename );
+    const file = path.join( dir, filename );
     if ( fs.existsSync( file ) )
     {
         fs.unlinkSync( file );
@@ -71,7 +71,7 @@ function outputSourceCode( dir, sourceCode, filename ) {
  */
 function generateIndexFile( dir, classes ) {
 
-    var indexSource = templateUtils.render( jsConfig.index.template, {
+    const indexSource = templateUtils.render( jsConfig.index.template, {
         classes: classes
     } );
 
@@ -87,9 +87,9 @@ function generateIndexFile( dir, classes ) {
  * @returns {ClassData[]}
  */
 function generateDirClasses( dir, filenames ) {
-    var result = [];
+    const result = [];
     filenames.forEach( function( filename ) {
-        var classData = jsdocParser.parseClass( path.join( dir, filename ) );
+        const classData = jsdocParser.parseClass( path.join( dir, filename ) );
         if ( classData.isValidClass() )
         {
             result.push( classData );
@@ -106,10 +106,10 @@ function generateDirClasses( dir, filenames ) {
  * @returns {ClassData[]}
  */
 function processDir( dir ) {
-    var filesOrDirs = fs.readdirSync( dir );
-    var dirs = [];
-    var files = [];
-    var result = [];
+    const filesOrDirs = fs.readdirSync( dir );
+    let dirs = [];
+    let files = [];
+    let result = [];
 
     filesOrDirs.forEach( function( fileOrDir ) {
         if ( fs.statSync( path.join( dir, fileOrDir ) ).isDirectory() )
@@ -167,12 +167,12 @@ function processDir( dir ) {
  */
 function getGlobalIndexNamespace( namespace ) {
 
-    var namespaceParts = namespace.split( '.' );
+    const namespaceParts = namespace.split( '.' );
 
-    var index = jsConfig.globalIndex.namespaces.depth || namespaceParts.length;
+    let index = jsConfig.globalIndex.namespaces.depth || namespaceParts.length;
     index = Math.min( namespaceParts.length, index );
 
-    var result = '';
+    let result = '';
 
     do
     {
@@ -183,8 +183,8 @@ function getGlobalIndexNamespace( namespace ) {
 
     if ( usedInnerNamespaces.hasOwnProperty( result ) )
     {
-        var count = 0;
-        var globalIndexNamespace = result;
+        let count = 0;
+        const globalIndexNamespace = result;
         while ( usedInnerNamespaces.hasOwnProperty( result ) )
         {
             ++count;
@@ -205,7 +205,7 @@ function getGlobalIndexNamespace( namespace ) {
  */
 function addToGlobalIndex( dir, classes ) {
 
-    var relativeDir = path.relative( jsConfig.globalIndex.outputDir, dir )
+    const relativeDir = path.relative( jsConfig.globalIndex.outputDir, dir )
         .split( path.sep )
         .join( path.posix.sep );
 
@@ -225,8 +225,8 @@ function addToGlobalIndex( dir, classes ) {
  * @param {string} fullNamespace
  */
 function addToNamespaces( fullNamespace ) {
-    var parts = fullNamespace.split( '.' );
-    var root = namespaceTree;
+    const parts = fullNamespace.split( '.' );
+    let root = namespaceTree;
     parts.forEach( function( namespace ) {
         if ( !root.hasOwnProperty( namespace ) )
         {
@@ -244,7 +244,7 @@ function processDirs( dirs ) {
     dirs.forEach( function( dir ) {
         if ( fs.existsSync( dir ) )
         {
-            var classes = processDir( dir );
+            const classes = processDir( dir );
 
             if ( classes.length > 0 )
             {
@@ -267,7 +267,7 @@ function processDirs( dirs ) {
  * @returns {boolean}
  */
 function generateGlobalIndexEnabled() {
-    var result = jsConfig.index.enabled && jsConfig.globalIndex.enabled;
+    const result = jsConfig.index.enabled && jsConfig.globalIndex.enabled;
     return result;
 }
 
@@ -276,9 +276,9 @@ function generateGlobalIndexEnabled() {
  * @param root
  */
 function getNamespaceFilename( root ) {
-    var filename = jsConfig.namespaces.filename.replace( "[root]", root );
+    const filename = jsConfig.namespaces.filename.replace( "[root]", root );
 
-    var result = path.join( jsConfig.namespaces.outputDir, filename );
+    const result = path.join( jsConfig.namespaces.outputDir, filename );
 
     return result;
 }
@@ -289,7 +289,7 @@ function getNamespaceFilename( root ) {
  * @param {string} source
  */
 function outputNamespaceFile( root, source ) {
-    var filename = getNamespaceFilename( root );
+    const filename = getNamespaceFilename( root );
     fs.appendFileSync( filename, source );
 }
 
@@ -298,11 +298,11 @@ function outputNamespaceFile( root, source ) {
  */
 function generateNamespaceFiles() {
     namespaceFiles = [];
-    var root;
+    let root;
 
     for ( root in namespaceTree )
     {
-        var filename = getNamespaceFilename( root );
+        const filename = getNamespaceFilename( root );
 
         namespaceFiles.push( {
             root: root,
@@ -320,13 +320,12 @@ function generateNamespaceFiles() {
         if ( namespaceTree.hasOwnProperty( root ) )
         {
 
-            var source = templateUtils.render( jsConfig.namespaces.template, {
+            const source = templateUtils.render( jsConfig.namespaces.template, {
                 root: root,
                 tree: stringifyObject( namespaceTree[ root ], {
                     indent: '    '
                 } )
             } );
-
 
             outputNamespaceFile( root, source );
         }

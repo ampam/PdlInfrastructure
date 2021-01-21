@@ -123,6 +123,8 @@ function ClassData() {
     /** @type {string[]} */
     this.imports = [];
 
+    this.last = false;
+
 
     /**
      *

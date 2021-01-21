@@ -126,7 +126,7 @@ function JsConfig() {
         enabled: true,
         filename: "[root].namespaces.js",
         outputDir: 'output/js',
-        'template': 'namespace'
+        template: 'namespace'
     };
 
     /**
