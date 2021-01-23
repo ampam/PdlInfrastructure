@@ -1334,7 +1334,7 @@ abstract class Row extends Attributable
     /**
      *
      */
-    private function calculateColumns()
+    public function calculateColumns()
     {
         foreach ( $this->getCalculatedColumns() as $calculatedColumnName )
         {
