@@ -300,6 +300,9 @@ function generateNamespaceFiles() {
     namespaceFiles = [];
     let root;
 
+    addToNamespaces( 'com.mh.ds.infrastructure.data' );
+    addToNamespaces( 'com.mh.ds.infrastructure.languages.js' );
+
     for ( root in namespaceTree )
     {
         const filename = getNamespaceFilename( root );

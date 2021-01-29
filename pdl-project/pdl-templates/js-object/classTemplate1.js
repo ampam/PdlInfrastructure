@@ -11,7 +11,6 @@ const [class-name] = {
     [method-list]
 };
 
-[property-attributes]
 
 /**
  [jsdoc-class]
@@ -19,6 +18,7 @@ const [class-name] = {
  [jsdoc-properties]
  */
 [class-declaration] = [class-name];
+[property-attributes]
 
 export default [class-name];
 

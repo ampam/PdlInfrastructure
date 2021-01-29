@@ -23,6 +23,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
 use ReflectionProperty;
+use stdClass;
 
 /**
  * Class Row
@@ -649,12 +650,16 @@ abstract class Row extends Attributable
     }
 
     /**
-     * @param $dbRow
+     * @param array|stdClass $dbRow
      */
     public function loadFromDbRow( $dbRow )
     {
         if ( !empty( $dbRow ) )
         {
+            if ( $dbRow instanceof stdClass )
+            {
+                $dbRow = json_decode( json_encode( $dbRow ), true );
+            }
             foreach ( $dbRow as $columnName => &$value )
             {
                 $this->setColumnValue( $columnName, $value );
@@ -1141,6 +1146,65 @@ abstract class Row extends Attributable
         }
         $selectOptions[ SqlOptions::Table ] = $tableName;
         $result = self::getFactory()->getDb()->select( $selectOptions );
+
+        return $result;
+    }
+
+    /**
+     * @param WhereStatement|String $where
+     * @param null $columnList
+     * @param string $rowClass
+     *
+     * @return static
+     *
+     * @throws Exception
+     */
+    public static function loadRowsWhereById( $where, $columnList = null, $byDbId = false, $rowClass = '' )
+    {
+        $result = self::loadRowsWhere( $where, $columnList, true, $rowClass );
+        return $result;
+    }
+
+    /**
+     * @param WhereStatement|String $where
+     * @param null $columnList
+     * @param string $rowClass
+     *
+     * @return static
+     *
+     * @throws Exception
+     */
+    public static function loadRowsWhere( $where, $columnList = null, $byDbId = false, $rowClass = '' )
+    {
+        if ( empty( $rowClass ) )
+        {
+            $rowClass = static::class;
+        }
+
+        $selectOptions = [
+            SqlOptions::Table => self::getFullTablenameFromClass( $rowClass ),
+            SqlOptions::Where => $where,
+            SqlOptions::Fields => $columnList
+        ];
+
+        $dbRows = self::$rowFactory->getDb()->select( $selectOptions );
+
+        $result = [];
+        $rowFactory = Row::getFactory();
+
+        foreach ( $dbRows as $dbRow )
+        {
+            $row = $rowFactory->create( $rowClass );
+            $row->loadFromDbRow( $dbRow );
+            if ( $byDbId )
+            {
+                $result[ $row->getDbId() ] = $row;
+            }
+            else
+            {
+                $result[] = $row;
+            }
+        }
 
         return $result;
     }

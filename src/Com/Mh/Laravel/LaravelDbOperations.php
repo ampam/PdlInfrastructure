@@ -112,7 +112,17 @@ class LaravelDbOperations implements IDbOperations
         $sql = "INSERT INTO {$table} {$fields}";
 
 
-        $result = Db::insert( $sql );
+        $success = Db::insert( $sql );
+
+        $result = $success
+            ? DB::getPdo()->lastInsertId()
+            : -1;
+
+        if ( is_numeric( $result ) )
+        {
+            $result = intval( $result, 10 );
+        }
+
         return $result;
     }
 

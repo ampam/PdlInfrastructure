@@ -14,16 +14,15 @@ const [class-name] = function () {
     [method-list]
 };
 
-/** inheritance */
-inherit( [namespace], '[class-name]', [full-parent-class] );
-
-[property-attributes]
-
 /**
 [jsdoc-class]
  *
 [jsdoc-properties]
  */
 [class-declaration] = [class-name];
+[property-attributes]
+
+/** inheritance */
+inherit( [namespace], '[class-name]', [full-parent-class] );
 
 export default [class-name];

@@ -46,10 +46,8 @@ class PdlServiceProvider extends ServiceProvider
                 self::PdlProjectPath => self::getPdlProjectDestPath( '' ),
             ], 'pdl-project' );
         }
-        else
-        {
-            $this->initPdl();
-        }
+
+        $this->initPdl();
     }
 
     /**
