@@ -41,7 +41,8 @@ class DbUtils
     /**
      * @param $config
      *
-     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection*/
+     * @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection
+     */
     public static function setConfig( &$config )
     {
         self::$config = $config;
@@ -61,7 +62,7 @@ class DbUtils
 
         self::$dbConnection = $result;
 
-        self::$escapeFunc = function( $value ):string  {
+        self::$escapeFunc = function ( $value ): string {
             $result = self::$dbConnection->escapeString( $value );
             return $result;
         };
@@ -141,7 +142,6 @@ class DbUtils
     }
 
 
-
     /**
      * @param $fields
      *
@@ -149,14 +149,10 @@ class DbUtils
      */
     public static function fields2UpdateWithOperators( $fields )
     {
-        $result = '';
+        $assignments = [];
 
         foreach ( $fields as $field => $rightSide )
         {
-            if ( !empty( $result ) )
-            {
-                $result .= ', ';
-            }
 
             $field = "`{$field}`";
 
@@ -171,44 +167,45 @@ class DbUtils
                 $value = $rightSide;
             }
 
-            $escapedValue = addslashes( $value );
+            $escapedValue = $value !== null
+                ? "'" . addslashes( $value ) . "'"
+                : 'NULL';
 
             switch ( $operation )
             {
                 case RowOperation::Add:
-                    {
-                        $result .= "{$field} = {$field} + {$value}";
-                        break;
-                    }
+                {
+                    $assignments[] = "{$field} = {$field} + {$value}";
+                    break;
+                }
                 case RowOperation::Sub:
-                    {
-                        $result .= "{$field} = {$field} - {$value}";
-                        break;
-                    }
+                {
+                    $assignments[] = "{$field} = {$field} - {$value}";
+                    break;
+                }
                 case RowOperation::Mul:
-                    {
-                        $result .= "{$field} = {$field} * {$value}";
-                        break;
-                    }
+                {
+                    $assignments[] = "{$field} = {$field} * {$value}";
+                    break;
+                }
                 case RowOperation::Div:
-                    {
-                        $result .= "{$field} = {$field} / {$value}";
-                        break;
-                    }
+                {
+                    $assignments[] = "{$field} = {$field} / {$value}";
+                    break;
+                }
                 case RowOperation::Concat:
-                    {
-                        $result .= "{$field} = CONCAT_WS('', {$field}, '{$escapedValue}')";
-                        break;
-                    }
+                {
+                    $assignments[] = "{$field} = CONCAT_WS('', {$field}, {$escapedValue})";
+                    break;
+                }
                 default:
-                    {
-                        //plain assign
-                        $result .= "{$field} = '{$escapedValue}'";
-                    }
+                {
+                    $assignments[] = "{$field} = {$escapedValue}";
+                }
             }
         }
 
-        $result = " SET {$result}";
+        $result = " SET " . implode( ', ', $assignments );
 
         return $result;
     }
@@ -305,7 +302,7 @@ class DbUtils
      *
      * @phan-suppress PhanUndeclaredClassMethod
      */
-    private static function getConnectionInstance():IDbConnection
+    private static function getConnectionInstance(): IDbConnection
     {
         //TODO read from config what class to use
         $result = new DbConnectionImpl();
