@@ -26,7 +26,7 @@ class {{orderByClass}} extends OrderByStatement
 
     const FullTableName = '{{dbName}}.{{tableName}}';
 
-    public static $rowClass = {{rowClass}}::class;
+    public $rowClass = {{rowClass}}::class;
 
 
     /**
@@ -59,7 +59,7 @@ class {{orderByClass}} extends OrderByStatement
      */
     public function getRowClass()
     {
-        return self::$rowClass;
+        return $this->rowClass;
     }
 
 

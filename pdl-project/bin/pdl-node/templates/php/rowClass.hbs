@@ -49,6 +49,7 @@ class {{rowClass}} extends Row
     public static function where()
     {
         $result = new {{whereClass}}( null );
+        $result->rowClass = static::class;
         return $result;
     }
 
@@ -58,6 +59,7 @@ class {{rowClass}} extends Row
     public static function fieldList()
     {
         $result = new {{fieldListClass}}( null );
+        $result->rowClass = static::class;
         return $result;
     }
 

@@ -28,7 +28,7 @@ class {{fieldListClass}} extends FieldList
 
     const FullTableName = '{{dbName}}.{{tableName}}';
 
-    public static $rowClass = {{rowClass}}::class;
+    public $rowClass = {{rowClass}}::class;
     public static $fieldListClass = self::class;
     public static $orderByClass = {{orderByClass}}::class;
 
@@ -146,7 +146,7 @@ class {{fieldListClass}} extends FieldList
      */
     public function getRowClass()
     {
-        return self::$rowClass;
+        return $this->rowClass;
     }
 
     /**

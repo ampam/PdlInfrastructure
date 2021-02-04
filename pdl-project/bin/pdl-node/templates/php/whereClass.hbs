@@ -27,7 +27,7 @@ class {{whereClass}} extends WhereStatement
 
     const FullTableName = '{{dbName}}.{{tableName}}';
 
-    public static $rowClass = {{rowClass}}::class;
+    public $rowClass = {{rowClass}}::class;
     public static $fieldListClass = {{fieldListClass}}::class;
     public static $whereClass = self::class;
     public static $orderByClass = {{orderByClass}}::class;
@@ -80,7 +80,7 @@ class {{whereClass}} extends WhereStatement
      */
     public function getRowClass()
     {
-        return self::$rowClass;
+        return $this->rowClass;
     }
 
     /**
