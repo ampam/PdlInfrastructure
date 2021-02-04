@@ -1091,7 +1091,22 @@ abstract class Row extends Attributable
      *
      * @param string $rowClass
      *
-     * @return Row[]
+     * @return static[]
+     */
+    public static function loadAll( $byDbId = false, $rowClass = '' )
+    {
+        $result = static::loadRows( [], $byDbId, $rowClass );
+        return $result;
+    }
+
+    /**
+     *
+     * @param array $selectOptions
+     * @param bool $byDbId
+     *
+     * @param string $rowClass
+     *
+     * @return static[]
      */
     public static function loadRows( array $selectOptions, $byDbId = false, $rowClass = '' )
     {

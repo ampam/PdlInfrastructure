@@ -45,6 +45,7 @@ abstract class FieldList extends ColumnsList
     {
         $class = $this->getOrderByClass();
         $result = new $class( $this->where, $this );
+        $result->rowClass = $this->getRowClass();
         return $result;
     }
 

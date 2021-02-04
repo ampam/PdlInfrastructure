@@ -111,7 +111,6 @@ class LaravelDbOperations implements IDbOperations
 
         $sql = "INSERT INTO {$table} {$fields}";
 
-
         $success = Db::insert( $sql );
 
         $result = $success
@@ -239,8 +238,8 @@ class LaravelDbOperations implements IDbOperations
     public function escapeString( $value ): string
     {
         $quotedString = Db::getPdo()->quote( $value );
-        $parts = explode( "'", $quotedString );
-        $result = $parts[ 1 ] ?? $parts[ 0 ];
+        $result = substr( substr( $quotedString, 1  ), 0, -1 );
+
         return $result;
     }
 

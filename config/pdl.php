@@ -11,8 +11,11 @@ return [
         'enabled' => true,
         'persistentId' => 'appMain',
         'options' => [
-            Memcached::OPT_DISTRIBUTION => Memcached::DISTRIBUTION_CONSISTENT,
-            //Memcached::OPT_SERIALIZER => Memcached::SERIALIZER_JSON
+            /** Same as Memcached::OPT_DISTRIBUTION => Memcached::DISTRIBUTION_CONSISTENT */
+            9 => 1,
+
+            /** Same as Memcached::OPT_SERIALIZER => Memcached::SERIALIZER_JSON,*/
+            //-1003 => 3
         ],
         'servers' => [
             'localhost' =>  [

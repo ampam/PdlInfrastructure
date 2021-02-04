@@ -215,18 +215,29 @@ class PdlDecoder
     }
 
     /**
-     * @param $object
-     * @param string $memberName
+     * @param $objectOrArray
+     * @param $memberName
      *
      * @return bool
      */
-    private static function canDecodeMember( &$object, string $memberName )
+    private static function canDecodeMember( &$objectOrArray, $memberName )
     {
-        $objectClass = get_class( $object );
-        $isExcludedRequestMember = in_array( $objectClass, self::$excludedClasses ) ||
-            in_array( $memberName, self::$excludedRequestMembers );
+        if ( is_array( $objectOrArray ) )
+        {
+            $theClass = self::getArrayClass( $objectOrArray );
+        }
+        else
+        {
+            $theClass = get_class( $objectOrArray );
+        }
 
-        $result = $memberName !== self::TypeHint && !$isExcludedRequestMember;
+        if ( $theClass !== null )
+        {
+            $isExcludedRequestMember = in_array( $theClass, self::$excludedClasses ) ||
+                in_array( $memberName, self::$excludedRequestMembers );
+
+            $result = $memberName !== self::TypeHint && !$isExcludedRequestMember;
+        }
 
         return $result;
     }
@@ -254,7 +265,7 @@ class PdlDecoder
     {
         foreach ( $arrayOrObject as $memberName => &$value )
         {
-            if ( self::canDecodeMember( $object, $memberName ) )
+            if ( self::canDecodeMember( $value, $memberName ) )
             {
                 $array[ $memberName ] = self::decodeValue( $value );
             }

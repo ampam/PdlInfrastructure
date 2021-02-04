@@ -14,6 +14,7 @@ namespace Com\Mh\Ds\Infrastructure\Languages\Php\Reflection\DocBlock;
 
 use InvalidArgumentException;
 use phpDocumentor\Reflection\DocBlock\TagFactory;
+use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Factory\StaticMethod;
 use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 use phpDocumentor\Reflection\FqsenResolver;
@@ -99,7 +100,7 @@ final class PamStandardTagFactory implements TagFactory
     /**
      * {@inheritDoc}
      */
-    public function create($tagLine, TypeContext $context = null)
+    public function create( string $tagLine, ?TypeContext $context = null): Tag
     {
         if (! $context) {
             $context = new TypeContext('');
@@ -119,7 +120,7 @@ final class PamStandardTagFactory implements TagFactory
     /**
      * {@inheritDoc}
      */
-    public function addParameter($name, $value)
+    public function addParameter( string $name, $value):void
     {
         $this->serviceLocator[$name] = $value;
     }
@@ -127,7 +128,7 @@ final class PamStandardTagFactory implements TagFactory
     /**
      * {@inheritDoc}
      */
-    public function addService($service, $alias = null)
+    public function addService($service, $alias = null):void
     {
         $this->serviceLocator[$alias ?: get_class($service)] = $service;
     }
@@ -135,7 +136,7 @@ final class PamStandardTagFactory implements TagFactory
     /**
      * {@inheritDoc}
      */
-    public function registerTagHandler($tagName, $handler)
+    public function registerTagHandler($tagName, $handler):void
     {
         Assert::stringNotEmpty($tagName);
         Assert::stringNotEmpty($handler);

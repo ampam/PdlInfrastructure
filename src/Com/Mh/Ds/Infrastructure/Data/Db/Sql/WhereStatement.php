@@ -31,8 +31,19 @@ abstract class WhereStatement extends BoolExpression
         _delete as _traitDelete;
     }
 
+
     /** @var FieldList */
     protected $fieldList = null;
+
+    /**
+     * WhereStatement constructor.
+     *
+     * @param BoolExpression|null $parent
+     */
+    public function __construct( BoolExpression $parent = null )
+    {
+        parent::__construct( $parent );
+    }
 
     public abstract function getWhereClass();
     public abstract function getFieldListClass();
@@ -47,6 +58,7 @@ abstract class WhereStatement extends BoolExpression
         {
             $class = $this->getFieldListClass();
             $this->fieldList = new $class( $this );
+            $this->fieldList->rowClass = $this->getRowClass();
         }
         $result = $this->fieldList;
         return $result;
@@ -59,18 +71,10 @@ abstract class WhereStatement extends BoolExpression
     {
         $class = $this->getOrderByClass();
         $result = new $class( $this, $this->fieldList );
+        $result->rowClass = $this->getRowClass();
         return $result;
     }
 
-    /**
-     * WhereStatement constructor.
-     *
-     * @param BoolExpression|null $parent
-     */
-    public function __construct( BoolExpression $parent = null )
-    {
-        parent::__construct( $parent );
-    }
 
     /**
      * @return mixed
