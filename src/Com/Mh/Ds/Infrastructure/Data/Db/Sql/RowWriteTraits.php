@@ -51,7 +51,7 @@ trait RowWriteTraits
         $result = Row::multiUpdate( [
             SqlOptions::Fields => $fieldArray,
             SqlOptions::Where => $where
-        ], $this->fullTableName() );
+        ], $this->fullTableName(), $this->getRowClass() );
 
         return $result;
     }

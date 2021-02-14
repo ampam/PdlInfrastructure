@@ -33,6 +33,18 @@ class PdlDecoder
         self::$excludedClasses = $config['pdl']['excludedClasses'] ?? [];
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public static function decodeToClass( &$value, $className )
+    {
+        PdlInjector::setTypeHint( $value, $className );
+        $result = self::decodeValue( $value );
+        return $result;
+    }
+
 
     /**
      * @param mixed $value

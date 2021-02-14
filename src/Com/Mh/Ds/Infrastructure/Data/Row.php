@@ -78,7 +78,7 @@ abstract class Row extends Attributable
     }
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getCalculatedColumns(): array
     {
@@ -867,14 +867,19 @@ abstract class Row extends Attributable
      * @param $updateOptions
      * @param string $tableName
      */
-    public static function multiUpdate( $updateOptions, $tableName = '' )
+    public static function multiUpdate( $updateOptions, $tableName = '', $rowClass = '' )
     {
         if ( empty( $tableName ) )
         {
             $tableName = static::FullTableName;
         }
 
-        $row = self::createInstance();
+        if ( empty( $rowClass ) )
+        {
+            $rowClass = static::class;
+        }
+
+        $row = self::createInstance( $rowClass );
         $updateOptions[ SqlOptions::Table ] = $tableName;
         $result = $row->getDb()->update( $updateOptions );
         return $result;

@@ -57,13 +57,13 @@ class PdlInjector implements IObjectObserver
     }
 
     /**
-     * @param $object
+     * @param $objectOrArray
      * @param $phpClassname
      *
      * @phan-suppress PhanUndeclaredProperty
      *
      */
-    public static function setTypeHint( &$object, $phpClassname )
+    public static function setTypeHint( &$objectOrArray, $phpClassname )
     {
         $pdlClassname = LanguageUtils::php2PdlClassname( $phpClassname );
         if ( !LanguageUtils::isProjectClass( $pdlClassname ) )
@@ -72,9 +72,19 @@ class PdlInjector implements IObjectObserver
         }
         $typeHint = self::TypeHint;
 
-        assert( property_exists( $object, $typeHint ) );
-
-        $object->$typeHint = $pdlClassname;
+        if ( is_object( $objectOrArray ) )
+        {
+            assert( property_exists( $object, $typeHint ) );
+            $objectOrArray->$typeHint = $pdlClassname;
+        }
+        else if ( is_array( $objectOrArray ) )
+        {
+            $objectOrArray[ $typeHint ] = $pdlClassname;
+        }
+        else
+        {
+            assert( false, "Invalid argument in PdlInjector::setTypeHint" );
+        }
     }
 
     /**
@@ -127,4 +137,6 @@ class PdlInjector implements IObjectObserver
     {
         self::markAsHinted( $object );
     }
+
+
 }
