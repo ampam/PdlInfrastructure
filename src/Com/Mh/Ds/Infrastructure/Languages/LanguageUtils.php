@@ -33,6 +33,12 @@ class LanguageUtils
      */
     public static function php2PdlClassname( string $phpClassname )
     {
+        if ( strpos( $phpClassname, '\\' ) === 0 )
+        {
+            $phpClassname = substr( $phpClassname, 1 );
+        }
+
+
         $parts = explode( '\\', $phpClassname );
         $className = array_pop( $parts );
         $pdlNamespace = strtolower( implode( '.', $parts ) );

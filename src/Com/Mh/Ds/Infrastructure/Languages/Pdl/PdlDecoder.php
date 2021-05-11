@@ -8,7 +8,12 @@
 
 namespace Com\Mh\Ds\Infrastructure\Languages\Pdl;
 
+use Com\Mh\Ds\Infrastructure\Languages\LanguageUtils;
+use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\Object_;
 use Com\Mh\Ds\Infrastructure\Diagnostic\Debug;
+use Com\Mh\Ds\Infrastructure\Languages\Php\Reflection\DocBlock\Unknown_;
 use Com\Mh\Ds\Infrastructure\Languages\Php\Reflection\PropertyUtils;
 
 
@@ -41,7 +46,7 @@ class PdlDecoder
     public static function decodeToClass( &$value, $className )
     {
         PdlInjector::setTypeHint( $value, $className );
-        $result = self::decodeValue( $value );
+        $result = self::decodeValue( $value, '' );
         return $result;
     }
 
@@ -53,24 +58,52 @@ class PdlDecoder
      */
     public static function decode( &$value )
     {
-        $result = self::decodeValue( $value );
+        $result = self::decodeValue( $value, '' );
         return $result;
     }
 
     /**
      * @param $value
+     * @param Type $typeFromParentObject
      *
      * @return mixed
      */
-    public static function decodeValue( &$value )
+    public static function decodeValue( &$value, $typeFromParentObject )
     {
         if ( is_object( $value ) )
         {
-            $result = self::decodeObject( $value );
+            $result = self::decodeObject( $value, $typeFromParentObject );
         }
         else if ( is_array( $value ) )
         {
-            $result = self::decodeArray( $value );
+            $sameElementArray = '';
+            if ( $typeFromParentObject instanceof Array_ )
+            {
+                $elementsType = $typeFromParentObject->getValueType();
+
+                if ( $elementsType instanceof Object_ )
+                {
+                    $sameElementArray = $elementsType->__toString();
+                    if ( !class_exists( $sameElementArray ) )
+                    {
+                        $sameElementArray = '';
+                    }
+                }
+            }
+            else if ( $typeFromParentObject instanceof Object_ )
+            {
+                $typeFromParentObject = $typeFromParentObject->__toString();
+            }
+
+            if ( is_string( $typeFromParentObject ) && class_exists( $typeFromParentObject ) )
+            {
+                //$pdlClassname = LanguageUtils::php2PdlClassname( $typeFromParentObject );
+                $result = self::decodeToClass( $value, $typeFromParentObject );
+            }
+            else
+            {
+                $result = self::decodeArray( $value, $sameElementArray );
+            }
         }
         else
         {
@@ -81,14 +114,20 @@ class PdlDecoder
 
     /**
      * @param $object
+     * @param Type $typeFromParentObject
      *
      * @return mixed
      */
-    private static function decodeObject( &$object )
+    private static function decodeObject( &$object, $typeFromParentObject )
     {
         $result = $object;
 
         $class = self::getObjectClass( $object );
+        if ( empty( $class ) && !$typeFromParentObject instanceof Unknown_ && !is_string( $typeFromParentObject ) )
+        {
+            $class = $typeFromParentObject->__toString();
+        }
+
         if ( !empty( $class ) )
         {
             $result = new $class();
@@ -100,13 +139,17 @@ class PdlDecoder
 
     /**
      * @param $array
+     * @param Type $elementsTypeFromParent
      *
      * @return mixed
      */
-    private static function decodeArray( &$array )
+    private static function decodeArray( &$array, $elementsTypeFromParent )
     {
+        //TODO do "same element" array
+
         $result = $array;
         $class = self::getArrayClass( $array );
+
         if ( !empty( $class ) )
         {
             $result = new $class();
@@ -114,7 +157,7 @@ class PdlDecoder
         }
         else
         {
-            self::decodeMembersToArray( $result, $array );
+            self::decodeMembersToArray( $result, $array, $elementsTypeFromParent );
         }
 
         return $result;
@@ -227,20 +270,27 @@ class PdlDecoder
     }
 
     /**
-     * @param $objectOrArray
+     * @param $value
      * @param $memberName
      *
      * @return bool
      */
-    private static function canDecodeMember( &$objectOrArray, $memberName )
+    private static function canDecodeMember( &$value, $memberName )
     {
-        if ( is_array( $objectOrArray ) )
+        $result = false;
+        $theClass = null;
+
+        if ( is_array( $value ) )
         {
-            $theClass = self::getArrayClass( $objectOrArray );
+            $theClass = self::getArrayClass( $value );
+        }
+        else if ( is_object( $value ) )
+        {
+            $theClass = get_class( $value );
         }
         else
         {
-            $theClass = get_class( $objectOrArray );
+            $result = true;
         }
 
         if ( $theClass !== null )
@@ -271,15 +321,20 @@ class PdlDecoder
 
     /**
      * @param array $array
+     * @param string $elementsTypeFromParent
      * @param Object|array $arrayOrObject
      */
-    private static function decodeMembersToArray( &$array, &$arrayOrObject )
+    private static function decodeMembersToArray( &$array, &$arrayOrObject, $elementsTypeFromParent )
     {
         foreach ( $arrayOrObject as $memberName => &$value )
         {
             if ( self::canDecodeMember( $value, $memberName ) )
             {
-                $array[ $memberName ] = self::decodeValue( $value );
+                $array[ $memberName ] = self::decodeValue( $value, '' );
+            }
+            else if ( !empty( $elementsTypeFromParent ) )
+            {
+                $array[ $memberName ] = self::decodeValue( $value, $elementsTypeFromParent );
             }
         }
     }
@@ -297,7 +352,8 @@ class PdlDecoder
         }
         else
         {
-            $object->$memberName = self::decodeValue( $value );
+            $propertyTypeFromReflection = PropertyUtils::getPropertyType( $object, $memberName );
+            $object->$memberName = self::decodeValue( $value, $propertyTypeFromReflection );
         }
     }
 

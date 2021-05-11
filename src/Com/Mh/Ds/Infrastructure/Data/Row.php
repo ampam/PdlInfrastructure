@@ -756,6 +756,22 @@ abstract class Row extends Attributable
     }
 
     /**
+     * @param Row[] $rows
+     * @param $columnName
+     * @return static[]
+     */
+    public static function byColumn( array $rows, $columnName )
+    {
+        $result = [];
+        foreach( $rows as $row )
+        {
+            $result[ $row->getDbColumnValue( $columnName ) ] = $row;
+        }
+
+        return $result;
+    }
+
+    /**
      * @return array
      */
     public function toDbRowForInsert()
@@ -1416,6 +1432,14 @@ abstract class Row extends Attributable
     }
 
     /**
+     * @param $columnName
+     */
+    public function calculateGenericColumn( $columnName )
+    {
+        return null;
+    }
+    
+    /**
      *
      */
     public function calculateColumns()
@@ -1426,6 +1450,10 @@ abstract class Row extends Attributable
             if ( method_exists( $this, $methodName ) )
             {
                 $this->$calculatedColumnName = $this->$methodName();
+            }
+            else
+            {
+                $this->$calculatedColumnName = $this->calculateGenericColumn( $calculatedColumnName );
             }
         }
     }

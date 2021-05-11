@@ -8,7 +8,7 @@
 
 namespace Com\Mh\Ds\Infrastructure\Languages\Php\Reflection;
 
-
+use phpDocumentor\Reflection\Type;
 use Com\Mh\Ds\Infrastructure\Languages\Php\Boolean;
 use Com\Mh\Ds\Infrastructure\Languages\Php\Reflection\DocBlock\DocBlockUtils;
 
@@ -18,6 +18,18 @@ use Com\Mh\Ds\Infrastructure\Languages\Php\Reflection\DocBlock\DocBlockUtils;
  */
 class PropertyUtils
 {
+    /**
+     * @param Object $object
+     * @param string $propertyName
+     *
+     * @return Type
+     */
+    public static function getPropertyType( $object, $propertyName )
+    {
+        $result = DocBlockUtils::getPropertyType( $object, $propertyName );
+        return $result;
+    }
+
     /**
      * @param Object $object
      * @param string $propertyName
