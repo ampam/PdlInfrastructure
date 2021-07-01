@@ -63,6 +63,30 @@ class PdlDecoder
     }
 
     /**
+     * @param $arrayType
+     *
+     * @return string
+     */
+    public static function getArrayItemsType( $arrayType )
+    {
+        $result = '';
+        //$elementsType = $typeFromParentObject->getValueType();
+        $elementsType = $arrayType->getValueType();
+
+        if ( $elementsType instanceof Object_ )
+        {
+            $result = $elementsType->__toString();
+            if ( !class_exists( $result ) )
+            {
+                $result = '';
+            }
+        }
+
+        return $result;
+
+    }
+
+    /**
      * @param $value
      * @param Type $typeFromParentObject
      *
@@ -76,19 +100,10 @@ class PdlDecoder
         }
         else if ( is_array( $value ) )
         {
-            $sameElementArray = '';
+            $arrayItemsType = '';
             if ( $typeFromParentObject instanceof Array_ )
             {
-                $elementsType = $typeFromParentObject->getValueType();
-
-                if ( $elementsType instanceof Object_ )
-                {
-                    $sameElementArray = $elementsType->__toString();
-                    if ( !class_exists( $sameElementArray ) )
-                    {
-                        $sameElementArray = '';
-                    }
-                }
+                $arrayItemsType = self::getArrayItemsType( $typeFromParentObject );
             }
             else if ( $typeFromParentObject instanceof Object_ )
             {
@@ -102,7 +117,7 @@ class PdlDecoder
             }
             else
             {
-                $result = self::decodeArray( $value, $sameElementArray );
+                $result = self::decodeArray( $value, $arrayItemsType );
             }
         }
         else

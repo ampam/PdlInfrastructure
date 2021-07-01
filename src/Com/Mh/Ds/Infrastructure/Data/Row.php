@@ -650,13 +650,13 @@ abstract class Row extends Attributable
     }
 
     /**
-     * @param array|stdClass $dbRow
+     * @param array|stdClass|object $dbRow
      */
     public function loadFromDbRow( $dbRow )
     {
         if ( !empty( $dbRow ) )
         {
-            if ( $dbRow instanceof stdClass )
+            if ( !is_array( $dbRow ) )
             {
                 $dbRow = json_decode( json_encode( $dbRow ), true );
             }
@@ -758,12 +758,13 @@ abstract class Row extends Attributable
     /**
      * @param Row[] $rows
      * @param $columnName
+     *
      * @return static[]
      */
     public static function byColumn( array $rows, $columnName )
     {
         $result = [];
-        foreach( $rows as $row )
+        foreach ( $rows as $row )
         {
             $result[ $row->getDbColumnValue( $columnName ) ] = $row;
         }
@@ -798,6 +799,22 @@ abstract class Row extends Attributable
     {
         $dbIdProperty = $this->_dbIdProperty;
         $this->$dbIdProperty = $dbId;
+    }
+
+    /**
+     * @param Row $rowObject
+     * @param $columns
+     */
+    public function copyColumns( Row $rowObject, $columns )
+    {
+        foreach( $columns as $column )
+        {
+            $value = $rowObject->getDbColumnValue( $column );
+            if ( $value !== null )
+            {
+                $this->setColumnValue( $column, $value );
+            }
+        }
     }
 
     /**
@@ -1438,22 +1455,25 @@ abstract class Row extends Attributable
     {
         return null;
     }
-    
+
     /**
-     *
+     * @param array $excludedColumns
      */
-    public function calculateColumns()
+    public function calculateColumns( $excludedColumns = [])
     {
         foreach ( $this->getCalculatedColumns() as $calculatedColumnName )
         {
-            $methodName = "calculate{$calculatedColumnName}";
-            if ( method_exists( $this, $methodName ) )
+            if ( !in_array( $calculatedColumnName, $excludedColumns ) )
             {
-                $this->$calculatedColumnName = $this->$methodName();
-            }
-            else
-            {
-                $this->$calculatedColumnName = $this->calculateGenericColumn( $calculatedColumnName );
+                $methodName = "calculate{$calculatedColumnName}";
+                if ( method_exists( $this, $methodName ) )
+                {
+                    $this->$calculatedColumnName = $this->$methodName();
+                }
+                else
+                {
+                    $this->$calculatedColumnName = $this->calculateGenericColumn( $calculatedColumnName );
+                }
             }
         }
     }

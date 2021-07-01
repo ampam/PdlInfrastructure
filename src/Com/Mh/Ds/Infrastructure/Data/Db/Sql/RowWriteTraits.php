@@ -32,6 +32,7 @@ trait RowWriteTraits
      */
     public function _delete( WhereStatement $where = null )
     {
+        $where = $where ?? ( $this instanceof WhereStatement ? $this : null );
         $result = Row::deleteWhere( [
             SqlOptions::Where => $where
         ], $this->fullTableName() );
@@ -48,6 +49,8 @@ trait RowWriteTraits
      */
     public function _updateFromArray( array $fieldArray, WhereStatement $where = null )
     {
+        $where = $where ?? ( $this instanceof WhereStatement ? $this : null );
+
         $result = Row::multiUpdate( [
             SqlOptions::Fields => $fieldArray,
             SqlOptions::Where => $where
