@@ -60,10 +60,15 @@ trait RowReadTraits
      */
     public function _loadRows( WhereStatement $where = null, FieldList $fieldList = null, $byDbId = false )
     {
-        $result = Row::loadRows( [
+        $selectOptions = [
             SqlOptions::Fields => $fieldList,
             SqlOptions::Where => $where
-            ], $byDbId, $this->getRowClass() );
+        ];
+        if( $this instanceof OrderByStatement )
+        {
+            $selectOptions[ SqlOptions::Order ] = $this;
+        }
+        $result = Row::loadRows( $selectOptions, $byDbId, $this->getRowClass() );
 
         return $result;
     }

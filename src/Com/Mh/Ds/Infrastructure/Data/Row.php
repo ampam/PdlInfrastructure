@@ -807,7 +807,7 @@ abstract class Row extends Attributable
      */
     public function copyColumns( Row $rowObject, $columns )
     {
-        foreach( $columns as $column )
+        foreach ( $columns as $column )
         {
             $value = $rowObject->getDbColumnValue( $column );
             if ( $value !== null )
@@ -1459,7 +1459,7 @@ abstract class Row extends Attributable
     /**
      * @param array $excludedColumns
      */
-    public function calculateColumns( $excludedColumns = [])
+    public function calculateColumns( $excludedColumns = [] )
     {
         foreach ( $this->getCalculatedColumns() as $calculatedColumnName )
         {
@@ -1476,6 +1476,80 @@ abstract class Row extends Attributable
                 }
             }
         }
+    }
+
+    /**
+     * @param WhereStatement|string|null $where
+     * @param string $tableName
+     * @param string $rowClass
+     */
+    public static function countRows( WhereStatement $where = null, $tableName = '', $rowClass = '' )
+    {
+        $result = self::aggregateColumns( ['*'], 'count', $where, $tableName, $rowClass )->value0;
+        return $result;
+    }
+
+
+    /**
+     * @param string[] $columnNames
+     * @param WhereStatement|string|null $where
+     * @param string $tableName
+     * @param string $rowClass
+     *
+     * @return StdObject
+     */
+    public static function sumColumns( $columnNames, WhereStatement $where = null, $tableName = '', $rowClass = '' )
+    {
+        $result = self::aggregateColumn( [ $columnNames ], 'sum', $where, $tableName, $rowClass );
+        return $result;
+    }
+
+    /**
+     * @param string $columnName
+     * @param WhereStatement|string|null $where
+     * @param string $tableName
+     * @param string $rowClass
+     */
+    public static function sumColumn( $columnName, WhereStatement $where = null, $tableName = '', $rowClass = '' )
+    {
+        $result = self::aggregateColumns( [ $columnName ], 'sum', $where, $tableName, $rowClass )->value0;
+        return $result;
+    }
+
+    /**
+     *
+     * @param string[] $columnNames
+     * @param string $operation
+     * @param WhereStatement|string|null $where
+     * @param string $tableName
+     * @param string $rowClass
+     */
+    public static function aggregateColumns( $columnNames, $operation, WhereStatement $where = null, $tableName = '', $rowClass = '' )
+    {
+        if ( empty( $rowClass ) )
+        {
+            $rowClass = static::class;
+        }
+
+        if ( empty( $tableName ) )
+        {
+            $tableName = self::getFullTablenameFromClass( $rowClass );
+        }
+
+        $fields = [];
+        $index = 0;
+        foreach( $columnNames as $columnName )
+        {
+            $fields[] = "{$operation}($columnName) as `value{$index}`";
+        }
+
+        $result = self::getFactory()->getDb()->selectOne( [
+            SqlOptions::Table => $tableName,
+            SqlOptions::Where => $where,
+            SqlOptions::Fields => $fields
+        ] );
+
+        return $result;
     }
 
 }

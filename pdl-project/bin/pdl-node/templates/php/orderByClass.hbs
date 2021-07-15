@@ -84,7 +84,7 @@ class {{orderByClass}} extends OrderByStatement
     public function _loadRows( WhereStatement $where = null, FieldList $fieldList = null, $byDbId = false )
     {
         /** @var {{rowClass}}[] $result */
-        $result = parent::_traitLoadRows(  $where ?? $this->where, $fieldList ?? $this->fieldList, $byDbId );
+        $result = parent::_loadRows(  $where ?? $this->where, $fieldList ?? $this->fieldList, $byDbId );
         return $result;
     }
 

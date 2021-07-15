@@ -4,6 +4,7 @@ const inherit = require('pdl/infrastructure/languages/js/inheritance').inherit;
 
 /**
  * @class {[class-name]}
+ * @extends {[full-parent-class]}
  *
 [jsdoc-properties]
  */
@@ -21,6 +22,8 @@ const [class-name] = function () {
  */
 [class-declaration] = [class-name];
 [property-attributes]
+
+/** @typedef {[class-declaration]|[class-name]} [class-name] */
 
 /** inheritance */
 inherit( [namespace], '[class-name]', [full-parent-class] );

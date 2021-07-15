@@ -22,6 +22,8 @@ const [class-name] = function () {
 [class-declaration] = [class-name];
 [property-attributes]
 
+/** @typedef {[class-declaration]|[class-name]} [class-name] */
+
 /** inheritance */
 inherit( [namespace], '[class-name]', [full-parent-class] );
 
