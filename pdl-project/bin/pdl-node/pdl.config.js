@@ -5,7 +5,7 @@ var developmentRoot = process.env.PAM_DEV || path.join( process.env.HOME, 'devel
 
 module.exports = {
 
-    companyName: 'PlusAMedia',
+    companyName: 'MyCompany',
     project: 'Pdl Project',
     version: '1.0.0',
 
