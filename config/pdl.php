@@ -4,6 +4,7 @@
 return [
     'server_timezone' => 'America/New_York',
     'logFile' => $_SERVER['DOCUMENT_ROOT'] . "/storage/logs/pdl.log",
+    'noTimestampTables' => [],
     'debug' => [
         'logQueriesEnabled' => false
     ],

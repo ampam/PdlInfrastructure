@@ -102,6 +102,7 @@ class DocBlockUtils
      */
     public static function getPropertyType( $object, $propertyName )
     {
+        //TODO if property not found we should check in the parent class of $object
         $docBlock = self::getDocBlock( $object );
         $property = self::getPropertyByName( $docBlock, $propertyName );
 

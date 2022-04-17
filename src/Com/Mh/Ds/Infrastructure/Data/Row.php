@@ -670,7 +670,10 @@ abstract class Row extends Attributable
             $this->setDbId( Row::InvalidDbId );
         }
 
-        $this->calculateColumns();
+        if ( $this->isValidRow() )
+        {
+            $this->calculateColumns();
+        }
     }
 
     /**
@@ -1168,7 +1171,6 @@ abstract class Row extends Attributable
         {
             $row = $rowFactory->create( $rowClass );
             $row->loadFromDbRow( $dbRow );
-            $row->calculateColumns();
             if ( $byDbId )
             {
                 $result[ $row->getDbId() ] = $row;

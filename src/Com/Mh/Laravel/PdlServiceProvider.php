@@ -117,6 +117,7 @@ class PdlServiceProvider extends ServiceProvider
     private function setConfig()
     {
         $config = Config::get('pdl');
+        $this->rowFactory->setNoTimestampTables( $config['noTimestampTables']);
         LanguageUtils::setConfig( $config );
         PdlDecoder::setConfig( $config );
         MySqlUtils::setConfig( $config );
@@ -129,8 +130,9 @@ class PdlServiceProvider extends ServiceProvider
      */
     private function initPdl()
     {
-        $rowFactory = LaravelRowFactory::getInstance();
-        Row::setDefaultFactory( $rowFactory );
+        $this->rowFactory = LaravelRowFactory::getInstance();
+        Row::setDefaultFactory( $this->rowFactory );
+        $config = Config::get('pdl');
         $this->setConfig();
     }
 }
